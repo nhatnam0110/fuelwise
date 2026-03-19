@@ -29,22 +29,45 @@ function Stepper({
   min: number; max: number; step?: number
   onChange: (v: number) => void
 }) {
+  const [raw, setRaw] = useState(String(value))
+
+  const handleButton = (next: number) => {
+    onChange(next)
+    setRaw(String(next))
+  }
+
+  const handleBlur = () => {
+    const parsed = Number(raw)
+    const clamped = isNaN(parsed) ? value : Math.min(max, Math.max(min, parsed))
+    onChange(clamped)
+    setRaw(String(clamped))
+  }
+
   return (
     <div className="bg-[#0d2a12] border border-[#1a3a1f] rounded-xl p-4">
-      <p className="text-[10px] tracking-[3px] uppercase text-[#4ade80] font-bold mb-3">{label}</p>
+      <div className="flex items-center gap-1.5 mb-3">
+        <p className="text-[10px] tracking-[3px] uppercase text-[#4ade80] font-bold">{label}</p>
+        <span className="text-[10px] tracking-[2px] uppercase text-[#2d5a35] font-bold">· {unit}</span>
+      </div>
       <div className="flex items-center justify-between gap-3">
         <button
-          onClick={() => onChange(Math.max(min, value - step))}
+          onClick={() => handleButton(Math.max(min, value - step))}
           className="w-9 h-9 rounded-full border border-[#1a3a1f] flex items-center justify-center text-[#4ade80] hover:border-[#4ade80] hover:bg-[#0d3a18] transition-colors"
         >
           <Minus size={14} />
         </button>
-        <div className="text-center flex-1">
-          <span className="text-3xl font-black text-white">{value}</span>
-          <span className="text-xs text-[#4ade80] ml-1.5">{unit}</span>
+        <div className="flex items-center justify-center flex-1">
+          <input
+            type="text"
+            inputMode="numeric"
+            value={raw}
+            onChange={(e) => setRaw(e.target.value)}
+            onBlur={handleBlur}
+            className="w-16 bg-transparent text-white text-3xl font-black text-center focus:outline-none caret-[#4ade80]"
+          />
         </div>
         <button
-          onClick={() => onChange(Math.min(max, value + step))}
+          onClick={() => handleButton(Math.min(max, value + step))}
           className="w-9 h-9 rounded-full border border-[#1a3a1f] flex items-center justify-center text-[#4ade80] hover:border-[#4ade80] hover:bg-[#0d3a18] transition-colors"
         >
           <Plus size={14} />
@@ -58,7 +81,7 @@ function Stepper({
 
 function StepIndicator({ current, total }: { current: number; total: number }) {
   return (
-    <div className="flex gap-2 mb-10">
+    <div className="flex gap-2 mb-5 md:mb-10">
       {Array.from({ length: total }).map((_, i) => (
         <div key={i} className="flex-1 h-[3px] rounded-full overflow-hidden bg-[#1a3a1f]">
           <motion.div
@@ -77,7 +100,7 @@ function StepIndicator({ current, total }: { current: number; total: number }) {
 
 function StepOne({ data, onChange }: { data: FormData; onChange: (d: Partial<FormData>) => void }) {
   return (
-    <div className="space-y-8">
+    <div className="space-y-4 md:space-y-8">
       <div>
         <p className="text-[10px] tracking-[3px] uppercase text-[#4ade80] font-bold mb-2">Step 1 of 3</p>
         <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight leading-none">
@@ -94,7 +117,7 @@ function StepOne({ data, onChange }: { data: FormData; onChange: (d: Partial<For
           value={data.name}
           placeholder="Your name"
           onChange={(e) => onChange({ name: e.target.value })}
-          className="bg-[#0d2a12] border border-[#1a3a1f] text-white text-lg rounded-xl px-4 py-3.5 focus:outline-none focus:border-[#4ade80] w-full placeholder:text-[#2d5a35] transition-colors"
+          className="bg-[#0d2a12] border border-[#1a3a1f] text-white text-lg rounded-xl px-4 py-2 md:py-3.5 focus:outline-none focus:border-[#4ade80] w-full placeholder:text-[#2d5a35] transition-colors"
         />
       </div>
 
@@ -106,7 +129,7 @@ function StepOne({ data, onChange }: { data: FormData; onChange: (d: Partial<For
             <button
               key={g}
               onClick={() => onChange({ gender: g })}
-              className={`py-3 rounded-xl font-bold uppercase text-sm tracking-widest transition-colors ${
+              className={`py-2 md:py-3 rounded-xl font-bold uppercase text-sm tracking-widest transition-colors ${
                 data.gender === g
                   ? 'bg-[#4ade80] text-[#0d1a0f]'
                   : 'bg-[#0d2a12] border border-[#1a3a1f] text-[#4ade80] hover:border-[#4ade80]'
@@ -138,7 +161,7 @@ const GOALS: { value: FormData['goal']; emoji: string; label: string; desc: stri
 
 function StepTwo({ data, onChange }: { data: FormData; onChange: (d: Partial<FormData>) => void }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 md:space-y-6">
       <div>
         <p className="text-[10px] tracking-[3px] uppercase text-[#4ade80] font-bold mb-2">Step 2 of 3</p>
         <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight leading-none">
@@ -151,7 +174,7 @@ function StepTwo({ data, onChange }: { data: FormData; onChange: (d: Partial<For
           <button
             key={value}
             onClick={() => onChange({ goal: value })}
-            className={`w-full text-left rounded-xl p-5 transition-all duration-200 ${
+            className={`w-full text-left rounded-xl p-3 md:p-5 transition-all duration-200 ${
               data.goal === value
                 ? 'border-2 border-[#4ade80] bg-[#0d3a18]'
                 : 'border border-[#1a3a1f] bg-[#0d2a12] hover:border-[#2d5a35]'
@@ -185,7 +208,7 @@ const ACTIVITY_LEVELS: { value: FormData['activityLevel']; emoji: string; label:
 
 function StepThree({ data, onChange }: { data: FormData; onChange: (d: Partial<FormData>) => void }) {
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 md:space-y-6">
       <div>
         <p className="text-[10px] tracking-[3px] uppercase text-[#4ade80] font-bold mb-2">Step 3 of 3</p>
         <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight leading-none">
@@ -198,7 +221,7 @@ function StepThree({ data, onChange }: { data: FormData; onChange: (d: Partial<F
           <button
             key={value}
             onClick={() => onChange({ activityLevel: value })}
-            className={`w-full text-left rounded-xl p-5 transition-all duration-200 ${
+            className={`w-full text-left rounded-xl p-3 md:p-5 transition-all duration-200 ${
               data.activityLevel === value
                 ? 'border-2 border-[#4ade80] bg-[#0d3a18]'
                 : 'border border-[#1a3a1f] bg-[#0d2a12] hover:border-[#2d5a35]'
@@ -233,7 +256,7 @@ function StepConfirm({ data, onConfirm }: { data: FormData; onConfirm: () => voi
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-3 md:space-y-6">
       <div>
         <p className="text-[10px] tracking-[3px] uppercase text-[#4ade80] font-bold mb-2">Your Fuel Plan</p>
         <h2 className="text-4xl md:text-5xl font-black uppercase tracking-tight leading-none">
@@ -254,7 +277,7 @@ function StepConfirm({ data, onConfirm }: { data: FormData; onConfirm: () => voi
       </div>
       <button
         onClick={onConfirm}
-        className="bg-[#4ade80] text-[#0d1a0f] font-black uppercase tracking-widest px-6 py-4 rounded-xl hover:bg-[#86efac] transition-colors w-full text-sm"
+        className="bg-[#4ade80] text-[#0d1a0f] font-black uppercase tracking-widest px-6 py-3 md:py-4 rounded-xl hover:bg-[#86efac] transition-colors w-full text-sm"
       >
         Start Fueling →
       </button>
@@ -287,7 +310,7 @@ export default function Onboarding() {
   }
 
   return (
-    <div className="min-h-screen text-white flex items-center justify-center px-8 py-12 relative overflow-x-hidden">
+    <div className="min-h-screen text-white flex items-center justify-center px-4 py-6 md:px-8 md:py-12 relative overflow-x-hidden">
       {/* Background image with dark overlay */}
       <div className="fixed inset-0 z-0">
         <img src={onboardingBg} alt="" className="w-full h-full object-cover opacity-40" />
@@ -296,7 +319,7 @@ export default function Onboarding() {
       <div className="relative z-10 w-full max-w-lg">
 
         {/* Logo */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-6 md:mb-12">
           <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tighter leading-none mb-4">
             Fuel<span className="text-[#35AB41]">Wise</span>
           </h2>
@@ -321,11 +344,11 @@ export default function Onboarding() {
         </AnimatePresence>
 
         {step < 4 && (
-          <div className="flex gap-3 mt-8">
+          <div className="flex gap-3 mt-4 md:mt-8">
             {step > 1 && (
               <button
                 onClick={() => setStep((s) => s - 1)}
-                className="border border-[#1a3a1f] text-[#4ade80] hover:border-[#4ade80] px-5 py-3.5 rounded-xl transition-colors text-sm font-bold uppercase tracking-wider"
+                className="border border-[#1a3a1f] text-[#4ade80] hover:border-[#4ade80] px-5 py-2.5 md:py-3.5 rounded-xl transition-colors text-sm font-bold uppercase tracking-wider"
               >
                 Back
               </button>
@@ -333,7 +356,7 @@ export default function Onboarding() {
             <button
               onClick={() => setStep((s) => s + 1)}
               disabled={step === 1 && !isStep1Valid}
-              className="flex-1 bg-[#4ade80] text-[#0d1a0f] font-black uppercase tracking-widest py-3.5 rounded-xl hover:bg-[#86efac] transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
+              className="flex-1 bg-[#4ade80] text-[#0d1a0f] font-black uppercase tracking-widest py-2.5 md:py-3.5 rounded-xl hover:bg-[#86efac] transition-colors text-sm disabled:opacity-30 disabled:cursor-not-allowed"
             >
               {step === 3 ? 'Calculate →' : 'Next →'}
             </button>
