@@ -18,7 +18,7 @@ export function PageWrapper({ children, className = '' }: PageWrapperProps) {
       initial="initial"
       animate="animate"
       exit="exit"
-      className={`min-h-screen bg-white text-[#0d1a0f] pb-20 md:pb-0 px-4 md:px-8 lg:px-12 py-6 ${className}`}
+      className={`min-h-screen pb-20 md:pb-0 ${className}`}
     >
       {children}
     </motion.div>
