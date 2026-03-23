@@ -1,10 +1,12 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Bell, Settings } from 'lucide-react'
 import { useStore } from '@/store'
+import { useT } from '@/hooks/useT'
 
 export function Navbar() {
-  const { profile } = useStore()
+  const { profile, language, setLanguage } = useStore()
   const navigate = useNavigate()
+  const t = useT()
 
   const initials = profile?.name
     ? profile.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
@@ -20,9 +22,9 @@ export function Navbar() {
       {/* Nav links */}
       <div className="flex items-center gap-8">
         {[
-          { to: '/dashboard', label: 'Dashboard' },
-          { to: '/generate',  label: 'Generate'  },
-          { to: '/saved',     label: 'Saved'      },
+          { to: '/dashboard', label: t.nav.dashboard },
+          { to: '/generate',  label: t.nav.generate  },
+          { to: '/saved',     label: t.nav.saved      },
         ].map(({ to, label }) => (
           <NavLink
             key={to}
@@ -40,12 +42,23 @@ export function Navbar() {
 
       {/* Right side */}
       <div className="flex items-center gap-3">
+        {/* Language toggle */}
+        <button
+          onClick={() => setLanguage(language === 'en' ? 'vi' : 'en')}
+          className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-[#1a3a1f] text-xs font-black tracking-widest text-[#a0af9e] hover:border-[#4ade80] hover:text-[#4ade80] transition-all"
+        >
+          <span className={language === 'en' ? 'text-[#4ade80]' : ''}>EN</span>
+          <span className="text-[#3d4b3e]">|</span>
+          <span className={language === 'vi' ? 'text-[#4ade80]' : ''}>VI</span>
+        </button>
+
         <button className="text-[#4ade80] hover:bg-[#0d2a12] rounded-lg p-2 transition-all">
           <Bell size={20} />
         </button>
         <button
           onClick={() => navigate('/saved')}
           className="text-[#4ade80] hover:bg-[#0d2a12] rounded-lg p-2 transition-all"
+          title={t.nav.settings}
         >
           <Settings size={20} />
         </button>

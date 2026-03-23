@@ -19,4 +19,5 @@ export interface GeneratorInput {
   mealType: 'breakfast' | 'lunch' | 'dinner' | 'snack'
   dietaryFilters: string[]
   cuisine: string
+  mealSize: 'light' | 'medium' | 'full'
 }
