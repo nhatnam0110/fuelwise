@@ -14,6 +14,7 @@ interface AppStore {
   // --- Daily log ---
   dailyLog: DailyLog | null
   logMeal: (meal: LoggedMeal) => void
+  deleteLoggedMeal: (loggedAt: number) => void
   resetDailyLog: () => void
   getRemainingMacros: () => Nutrition
 
@@ -33,6 +34,10 @@ interface AppStore {
   error: string | null
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void
+
+  // --- Language ---
+  language: 'en' | 'vi'
+  setLanguage: (lang: 'en' | 'vi') => void
 }
 
 const today = () => new Date().toISOString().split('T')[0]
@@ -79,6 +84,22 @@ export const useStore = create<AppStore>()(
           }
         }),
 
+      deleteLoggedMeal: (loggedAt) =>
+        set((state) => {
+          if (!state.dailyLog) return {}
+          const meals = state.dailyLog.meals.filter((m) => m.loggedAt !== loggedAt)
+          const totals = meals.reduce<Nutrition>(
+            (acc, m) => ({
+              calories: acc.calories + m.nutrition.calories,
+              protein:  acc.protein  + m.nutrition.protein,
+              carbs:    acc.carbs    + m.nutrition.carbs,
+              fat:      acc.fat      + m.nutrition.fat,
+            }),
+            emptyNutrition()
+          )
+          return { dailyLog: { ...state.dailyLog, meals, totals } }
+        }),
+
       resetDailyLog: () =>
         set({
           dailyLog: {
@@ -121,7 +142,8 @@ export const useStore = create<AppStore>()(
         ingredients: [],
         mealType: 'dinner',
         dietaryFilters: [],
-        cuisine: 'Any',
+        cuisine: 'Vietnamese',
+        mealSize: 'medium',
       },
       updateGeneratorInput: (input) =>
         set((state) => ({
@@ -133,6 +155,10 @@ export const useStore = create<AppStore>()(
       error: null,
       setLoading: (isLoading) => set({ isLoading }),
       setError: (error) => set({ error }),
+
+      // --- Language ---
+      language: 'vi',
+      setLanguage: (language) => set({ language }),
     }),
     {
       name: 'fuelwise-store', // localStorage key
@@ -141,6 +167,7 @@ export const useStore = create<AppStore>()(
         macroTargets: state.macroTargets,
         savedRecipes: state.savedRecipes,
         dailyLog: state.dailyLog,
+        language: state.language,
       }),
     }
   )
