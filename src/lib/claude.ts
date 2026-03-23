@@ -66,7 +66,7 @@ export async function generateRecipe(
   })
 
   const message = await client.messages.create({
-    model: 'claude-haiku-3-5-20251001',
+    model: 'claude-haiku-4-5-20251001',
     max_tokens: 1024,
     system: systemPrompt,
     messages: [
@@ -81,7 +81,8 @@ export async function generateRecipe(
 
   let parsed: Omit<Recipe, 'id'>
   try {
-    parsed = JSON.parse(raw.text)
+    const cleaned = raw.text.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '').trim()
+    parsed = JSON.parse(cleaned)
   } catch {
     throw new Error('Failed to parse recipe from AI response. Please try again.')
   }
