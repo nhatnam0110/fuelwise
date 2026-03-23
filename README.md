@@ -1,73 +1,75 @@
-# React + TypeScript + Vite
+# FuelWise
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Eat with purpose — Ăn vì sức khỏe, không chỉ vì no
 
-Currently, two official plugins are available:
+FuelWise is an AI-powered recipe generator and nutrition tracker. It calculates your daily macro targets based on your body stats and fitness goal, then uses Claude AI to generate personalized recipes that fit your remaining macros for the day.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Onboarding** — collect personal stats (age, weight, height, goal, activity level) with metric/imperial support
+- **TDEE Calculator** — Mifflin-St Jeor formula to compute daily calorie and macro targets (protein / carbs / fat)
+- **AI Recipe Generator** — powered by Claude AI (Haiku), generates recipes from your available ingredients adjusted to your remaining macros and meal size
+- **Meal Size Control** — Light (25%), Medium (40%), Full (60%) scaling of remaining macros per meal
+- **Meal Logger** — log meals to track daily nutrition intake, delete logged meals
+- **Saved Recipes** — save and filter recipes by meal type (breakfast, lunch, dinner, snack)
+- **EN / VI Language Toggle** — full bilingual support with Vietnamese cuisine as default
+- **Search Online** — find any generated recipe on Google with one click
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Layer | Technology |
+|---|---|
+| Framework | React 18 + TypeScript |
+| Build tool | Vite 7 |
+| Styling | Tailwind CSS v4 |
+| UI Components | shadcn/ui |
+| State management | Zustand (persisted to localStorage) |
+| Routing | React Router v6 |
+| Animation | Framer Motion |
+| AI | Anthropic Claude API (claude-haiku-4-5) |
+| Font | Merriweather (Google Fonts) |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- An [Anthropic API key](https://console.anthropic.com/)
+
+### Installation
+
+```bash
+git clone https://github.com/nhatnam0110/fuelwise.git
+cd fuelwise
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Environment Variables
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Create a `.env` file in the project root:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_ANTHROPIC_API_KEY=your_api_key_here
 ```
+
+> Never commit your `.env` file. It is already listed in `.gitignore`.
+
+### Run
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## License
+
+MIT
