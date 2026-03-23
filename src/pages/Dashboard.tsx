@@ -2,22 +2,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { Trash2, PlusCircle, UtensilsCrossed } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { useStore } from '@/store'
+import { useT } from '@/hooks/useT'
 
-const GOAL_LABEL: Record<string, string> = {
-  lose: 'Lose Weight',
-  gain: 'Gain Muscle',
-  maintain: 'Maintain',
-}
-
-function greeting() {
-  const h = new Date().getHours()
-  if (h < 12) return 'Good morning'
-  if (h < 17) return 'Good afternoon'
-  return 'Good evening'
-}
-
-function formatDay() {
-  return new Date().toLocaleDateString('en-US', {
+function formatDay(language: 'en' | 'vi') {
+  return new Date().toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US', {
     weekday: 'long', month: 'long', day: 'numeric',
   })
 }
@@ -26,7 +14,9 @@ function formatDay() {
 const RADIUS = 44
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS
 
-function CalorieRing({ consumed, target }: { consumed: number; target: number }) {
+function CalorieRing({ consumed, target, label, of: ofLabel, kcal }: {
+  consumed: number; target: number; label: string; of: string; kcal: string
+}) {
   const pct = target > 0 ? Math.min(1, consumed / target) : 0
   const remaining = Math.max(0, target - consumed)
   const offset = CIRCUMFERENCE * (1 - pct)
@@ -44,9 +34,9 @@ function CalorieRing({ consumed, target }: { consumed: number; target: number })
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="text-xs uppercase tracking-widest text-[#a0af9e]">Remaining</span>
+        <span className="text-xs uppercase tracking-widest text-[#a0af9e]">{label}</span>
         <span className="text-4xl font-black text-white">{remaining.toLocaleString()}</span>
-        <span className="text-xs text-[#a0af9e]">of {target.toLocaleString()} kcal</span>
+        <span className="text-xs text-[#a0af9e]">{ofLabel} {target.toLocaleString()} {kcal}</span>
       </div>
     </div>
   )
@@ -75,10 +65,18 @@ function MacroBar({ label, consumed, target, color }: {
 }
 
 export default function Dashboard() {
-  const { profile, macroTargets, dailyLog, getRemainingMacros } = useStore()
+  const { profile, macroTargets, dailyLog, getRemainingMacros, deleteLoggedMeal, language } = useStore()
   const navigate = useNavigate()
+  const t = useT()
   const remaining = getRemainingMacros()
   const totals = dailyLog?.totals ?? { calories: 0, protein: 0, carbs: 0, fat: 0 }
+
+  function greeting() {
+    const h = new Date().getHours()
+    if (h < 12) return t.dashboard.goodMorning
+    if (h < 17) return t.dashboard.goodAfternoon
+    return t.dashboard.goodEvening
+  }
 
   return (
     <PageWrapper className="bg-[#051107] text-white">
@@ -86,14 +84,13 @@ export default function Dashboard() {
 
         {/* Hero */}
         <section className="mt-6 space-y-1">
-          <p className="text-[#4ade80] font-bold tracking-widest uppercase text-xs">{formatDay()}</p>
+          <p className="text-[#4ade80] font-bold tracking-widest uppercase text-xs">{formatDay(language)}</p>
           <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white">
             {greeting()}, {profile?.name?.split(' ')[0] ?? 'there'}.
           </h1>
           {profile?.goal && (
             <p className="text-[#a0af9e] text-base mt-1">
-              Currently focusing on{' '}
-              <span className="text-[#4ade80] font-semibold">{GOAL_LABEL[profile.goal]}</span>.
+              {t.dashboard.goal(t.dashboard.goalLabels[profile.goal as keyof typeof t.dashboard.goalLabels])}
             </p>
           )}
         </section>
@@ -104,11 +101,11 @@ export default function Dashboard() {
           {/* Nutrition overview */}
           <div className="lg:col-span-8 bg-[#0d1d10] rounded-[2rem] p-8 flex flex-col md:flex-row gap-10 items-center"
             style={{ boxShadow: '0 0 40px -10px rgba(74,222,128,0.15)' }}>
-            <CalorieRing consumed={totals.calories} target={macroTargets?.calories ?? 2000} />
+            <CalorieRing consumed={totals.calories} target={macroTargets?.calories ?? 2000} label={t.dashboard.remaining} of={t.common.of} kcal={t.common.kcal} />
             <div className="w-full space-y-6">
-              <MacroBar label="Protein" consumed={totals.protein} target={macroTargets?.protein ?? 0} color="#699cff" />
-              <MacroBar label="Carbs"   consumed={totals.carbs}   target={macroTargets?.carbs   ?? 0} color="#facc15" />
-              <MacroBar label="Fat"     consumed={totals.fat}     target={macroTargets?.fat     ?? 0} color="#c084fc" />
+              <MacroBar label={t.common.protein} consumed={totals.protein} target={macroTargets?.protein ?? 0} color="#699cff" />
+              <MacroBar label={t.common.carbs}   consumed={totals.carbs}   target={macroTargets?.carbs   ?? 0} color="#facc15" />
+              <MacroBar label={t.common.fat}     consumed={totals.fat}     target={macroTargets?.fat     ?? 0} color="#c084fc" />
             </div>
           </div>
 
@@ -120,14 +117,12 @@ export default function Dashboard() {
               <div className="w-12 h-12 bg-[#4ade80]/20 rounded-xl flex items-center justify-center text-[#4ade80] mb-6">
                 <UtensilsCrossed size={22} />
               </div>
-              <h3 className="text-2xl font-black leading-tight mb-3 text-white">
-                Out of ideas?<br />Generate a Meal.
+              <h3 className="text-2xl font-black leading-tight mb-3 text-white whitespace-pre-line">
+                {t.dashboard.generateCTA}
               </h3>
-              <p className="text-[#a0af9e] leading-relaxed text-sm">
-                Let FuelWise AI suggest a recipe based on your remaining macros for today.
-              </p>
+              <p className="text-[#a0af9e] leading-relaxed text-sm">{t.dashboard.generateDesc}</p>
               <p className="text-[#4ade80] font-bold text-sm mt-3">
-                {remaining.calories.toLocaleString()} kcal remaining
+                {t.dashboard.kcalRemaining(remaining.calories)}
               </p>
             </div>
             <button
@@ -135,19 +130,19 @@ export default function Dashboard() {
               className="relative z-10 mt-8 w-full py-4 px-6 font-black rounded-full text-center transition-all active:scale-95 text-[#052108]"
               style={{ background: 'linear-gradient(135deg, #4ade80, #19be64)', boxShadow: '0 0 20px rgba(74,222,128,0.25)' }}
             >
-              Generate Recipe
+              {t.dashboard.generateBtn}
             </button>
           </div>
 
           {/* Today's Meals */}
           <div className="lg:col-span-12 space-y-5">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-black text-white">Today's Meals</h2>
+              <h2 className="text-xl font-black text-white">{t.dashboard.todayMeals}</h2>
               <Link
                 to="/generate"
                 className="flex items-center gap-2 text-[#4ade80] font-bold text-sm hover:bg-[#4ade80]/10 px-4 py-2 rounded-lg transition-all"
               >
-                <PlusCircle size={18} /> Log a Meal
+                <PlusCircle size={18} /> {t.dashboard.logMeal}
               </Link>
             </div>
 
@@ -158,15 +153,15 @@ export default function Dashboard() {
                     <UtensilsCrossed size={24} />
                   </div>
                   <div>
-                    <p className="font-black text-[#a0af9e]">No meals logged yet</p>
-                    <p className="text-[#a0af9e] text-sm">Generate a recipe to get started.</p>
+                    <p className="font-black text-[#a0af9e]">{t.dashboard.noMeals}</p>
+                    <p className="text-[#a0af9e] text-sm">{t.dashboard.noMealsHint}</p>
                   </div>
                 </div>
                 <Link
                   to="/generate"
                   className="bg-[#0d1d10] text-white px-5 py-2 rounded-full font-bold text-sm hover:bg-[#172a1a] transition-all"
                 >
-                  Add Meal
+                  {t.dashboard.addMeal}
                 </Link>
               </div>
             ) : (
@@ -193,7 +188,7 @@ export default function Dashboard() {
                         <span className="text-xl font-black text-[#4ade80]">{meal.nutrition.calories}</span>
                         <span className="text-xs text-[#a0af9e] block">kcal</span>
                       </div>
-                      <button className="text-[#a0af9e] hover:text-red-400 transition-colors">
+                      <button onClick={() => deleteLoggedMeal(meal.loggedAt)} className="text-[#a0af9e] hover:text-red-400 transition-colors">
                         <Trash2 size={18} />
                       </button>
                     </div>

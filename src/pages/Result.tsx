@@ -1,10 +1,13 @@
 import { useNavigate } from 'react-router-dom'
+import { ExternalLink } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useStore } from '@/store'
+import { useT } from '@/hooks/useT'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 
 export default function Result() {
   const navigate = useNavigate()
+  const t = useT()
   const { currentRecipe, saveRecipe, savedRecipes, logMeal } = useStore()
 
   if (!currentRecipe) {
@@ -42,7 +45,7 @@ export default function Result() {
 
         {/* Back */}
         <button onClick={() => navigate('/generate')} className="flex items-center gap-2 text-[#a0af9e] hover:text-white transition-colors text-sm">
-          ← Back to Generator
+          {t.result.backToGenerator}
         </button>
 
         {/* Hero */}
@@ -58,9 +61,9 @@ export default function Result() {
           <p className="text-[#a0af9e] text-lg max-w-2xl">{description}</p>
           <div className="flex gap-6 text-sm text-[#a0af9e] pt-1">
             <span>⏱ {cookTime}</span>
-            <span>🍽 {servings} serving{servings !== 1 ? 's' : ''}</span>
+            <span>🍽 {servings} {t.common.serving}</span>
             {macroFitScore != null && (
-              <span className={`font-bold ${macroFitColor}`}>Macro fit: {macroFitScore}/100</span>
+              <span className={`font-bold ${macroFitColor}`}>{t.result.macroFit}: {macroFitScore}/100</span>
             )}
           </div>
         </motion.div>
@@ -69,10 +72,10 @@ export default function Result() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
           className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: 'Calories', value: nutrition.calories, unit: 'kcal', color: 'text-[#4ade80]' },
-            { label: 'Protein',  value: nutrition.protein,  unit: 'g',    color: 'text-[#699cff]' },
-            { label: 'Carbs',    value: nutrition.carbs,    unit: 'g',    color: 'text-yellow-400' },
-            { label: 'Fat',      value: nutrition.fat,      unit: 'g',    color: 'text-purple-400' },
+            { label: t.common.calories, value: nutrition.calories, unit: t.common.kcal, color: 'text-[#4ade80]' },
+            { label: t.common.protein,  value: nutrition.protein,  unit: 'g',           color: 'text-[#699cff]' },
+            { label: t.common.carbs,    value: nutrition.carbs,    unit: 'g',           color: 'text-yellow-400' },
+            { label: t.common.fat,      value: nutrition.fat,      unit: 'g',           color: 'text-purple-400' },
           ].map(({ label, value, unit, color }) => (
             <div key={label} className="bg-[#0d1d10] rounded-2xl p-5 space-y-1">
               <p className="text-[10px] uppercase tracking-widest text-[#a0af9e] font-bold">{label}</p>
@@ -85,7 +88,7 @@ export default function Result() {
           {/* Ingredients */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}
             className="bg-[#0d1d10] rounded-2xl p-6 space-y-4">
-            <h2 className="text-xs uppercase tracking-widest font-black text-[#4ade80]">Ingredients</h2>
+            <h2 className="text-xs uppercase tracking-widest font-black text-[#4ade80]">{t.result.ingredients}</h2>
             <ul className="space-y-3">
               {ingredients.map((ing, i) => (
                 <li key={i} className="flex justify-between items-center border-b border-[#172a1a] pb-2 last:border-0 last:pb-0">
@@ -99,7 +102,7 @@ export default function Result() {
           {/* Steps */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="bg-[#0d1d10] rounded-2xl p-6 space-y-4">
-            <h2 className="text-xs uppercase tracking-widest font-black text-[#4ade80]">Instructions</h2>
+            <h2 className="text-xs uppercase tracking-widest font-black text-[#4ade80]">{t.result.instructions}</h2>
             <ol className="space-y-4">
               {steps.map((step, i) => (
                 <li key={i} className="flex gap-4">
@@ -116,16 +119,22 @@ export default function Result() {
           className="flex flex-col sm:flex-row gap-4 pt-2">
           <button onClick={handleLog}
             className="flex-1 py-4 bg-gradient-to-br from-[#4ade80] to-[#19be64] text-[#051107] font-black uppercase tracking-widest rounded-full hover:scale-[1.02] active:scale-95 transition-all">
-            Log This Meal
+            {t.result.logMeal}
           </button>
           <button onClick={handleSave} disabled={isSaved}
             className="flex-1 py-4 border-2 border-[#4ade80]/30 text-[#4ade80] font-black uppercase tracking-widest rounded-full hover:border-[#4ade80] transition-all disabled:opacity-40 disabled:cursor-not-allowed">
-            {isSaved ? 'Saved ✓' : 'Save Recipe'}
+            {isSaved ? t.result.savedCheck : t.result.saveRecipe}
           </button>
           <button onClick={() => navigate('/generate')}
             className="flex-1 py-4 bg-[#0d1d10] text-[#a0af9e] font-black uppercase tracking-widest rounded-full hover:text-white transition-all">
-            Try Another
+            {t.result.tryAnother}
           </button>
+          <a
+            href={`https://www.google.com/search?q=${encodeURIComponent(title + ' recipe')}`}
+            target="_blank" rel="noopener noreferrer"
+            className="flex items-center justify-center gap-2 flex-1 py-4 bg-[#0d1d10] text-[#a0af9e] font-black uppercase tracking-widest rounded-full hover:text-white transition-all">
+            <ExternalLink size={16} /> Search Online
+          </a>
         </motion.div>
 
       </div>
