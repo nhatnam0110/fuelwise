@@ -13,14 +13,14 @@ export function Navbar() {
     : 'FW'
 
   return (
-    <nav className="hidden md:flex fixed top-0 w-full bg-[#051107]/90 backdrop-blur-xl text-white px-8 h-16 items-center justify-between z-50 border-b border-[#0d2a12]">
+    <nav className="hidden md:grid grid-cols-3 fixed top-0 w-full bg-[#051107]/90 backdrop-blur-xl text-white px-8 h-16 items-center z-50 border-b border-[#0d2a12]">
       {/* Logo */}
       <span className="text-2xl font-black tracking-tighter">
         Fuel<span className="text-[#4ade80]">Wise</span>
       </span>
 
-      {/* Nav links */}
-      <div className="flex items-center gap-8">
+      {/* Nav links — pill container */}
+      <div className="flex items-center justify-center gap-1 bg-[#0a1a0c] border border-[#172a1a] rounded-full px-1.5 py-1.5 w-fit mx-auto">
         {[
           { to: '/dashboard', label: t.nav.dashboard },
           { to: '/generate',  label: t.nav.generate  },
@@ -31,8 +31,8 @@ export function Navbar() {
             to={to}
             className={({ isActive }) =>
               isActive
-                ? 'text-[#4ade80] font-bold text-sm border-b-2 border-[#4ade80] pb-0.5'
-                : 'text-[#a0af9e] hover:text-white text-sm font-bold transition-colors'
+                ? 'px-5 py-1.5 rounded-full bg-[#4ade80] text-[#051107] font-black text-sm tracking-wide transition-all'
+                : 'px-5 py-1.5 rounded-full bg-[#0d1d10] text-[#a0af9e] hover:text-white font-bold text-sm tracking-wide transition-all'
             }
           >
             {label}
@@ -41,7 +41,7 @@ export function Navbar() {
       </div>
 
       {/* Right side */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 justify-end">
         {/* Language toggle */}
         <button
           onClick={() => setLanguage(language === 'en' ? 'vi' : 'en')}
