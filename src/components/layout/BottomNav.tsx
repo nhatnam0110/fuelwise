@@ -1,15 +1,15 @@
 import { NavLink } from 'react-router-dom'
-import { Target, LayoutDashboard, ChefHat, Heart } from 'lucide-react'
+import { LayoutDashboard, ChefHat, Heart, TrendingUp } from 'lucide-react'
 import { useT } from '@/hooks/useT'
 
 export function BottomNav() {
   const t = useT()
 
   const tabs = [
-    { to: '/onboarding', icon: Target,          label: t.nav.goal  },
-    { to: '/dashboard',  icon: LayoutDashboard, label: t.nav.dash  },
-    { to: '/generate',   icon: ChefHat,         label: t.nav.cook  },
-    { to: '/saved',      icon: Heart,           label: t.nav.saved },
+    { to: '/dashboard',  icon: LayoutDashboard, label: t.nav.dash     },
+    { to: '/generate',   icon: ChefHat,         label: t.nav.cook     },
+    { to: '/progress',   icon: TrendingUp,      label: t.nav.progress },
+    { to: '/saved',      icon: Heart,           label: t.nav.saved    },
   ]
 
   return (

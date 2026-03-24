@@ -24,6 +24,7 @@ export function Navbar() {
         {[
           { to: '/dashboard', label: t.nav.dashboard },
           { to: '/generate',  label: t.nav.generate  },
+          { to: '/progress',  label: t.nav.progress  },
           { to: '/saved',     label: t.nav.saved      },
         ].map(({ to, label }) => (
           <NavLink
@@ -52,9 +53,6 @@ export function Navbar() {
           <span className={language === 'vi' ? 'text-[#4ade80]' : ''}>VI</span>
         </button>
 
-        <button className="text-[#4ade80] hover:bg-[#0d2a12] rounded-lg p-2 transition-all">
-          <Bell size={20} />
-        </button>
         <button
           onClick={() => navigate('/saved')}
           className="text-[#4ade80] hover:bg-[#0d2a12] rounded-lg p-2 transition-all"
@@ -62,9 +60,6 @@ export function Navbar() {
         >
           <Settings size={20} />
         </button>
-        <div className="w-9 h-9 rounded-full border-2 border-[#4ade80] bg-[#0d2a12] flex items-center justify-center text-xs font-black text-[#4ade80]">
-          {initials}
-        </div>
       </div>
     </nav>
   )

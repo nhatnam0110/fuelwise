@@ -12,6 +12,7 @@ export const vi: Translations = {
     goal: 'Mục tiêu',
     cook: 'Nấu',
     dash: 'Chính',
+    progress: 'Tiến độ',
   },
   common: {
     calories: 'Calo',

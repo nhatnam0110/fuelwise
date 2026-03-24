@@ -15,6 +15,7 @@ import Dashboard from '@/pages/Dashboard'
 import Generator from '@/pages/Generator'
 import Result from '@/pages/Result'
 import Saved from '@/pages/Saved'
+import Progress from '@/pages/Progress'
 import { formatDate } from '@/lib/utils'
 
 function AppShell() {
@@ -65,6 +66,7 @@ const router = createBrowserRouter([
       { path: '/generate',   element: <Generator /> },
       { path: '/recipe/:id', element: <Result /> },
       { path: '/saved',      element: <Saved /> },
+      { path: '/progress',   element: <Progress /> },
       { path: '/',           element: <Navigate to="/dashboard" replace /> },
     ],
   },

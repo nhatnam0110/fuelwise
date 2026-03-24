@@ -10,6 +10,7 @@ export const en = {
     goal: 'Goal',
     cook: 'Cook',
     dash: 'Dash',
+    progress: 'Progress',
   },
   common: {
     calories: 'Calories',
