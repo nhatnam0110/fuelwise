@@ -3,6 +3,8 @@ import { persist } from 'zustand/middleware'
 import type { Recipe, Nutrition } from '@/types/recipe'
 import type { UserProfile, MacroTargets } from '@/types/user'
 import type { DailyLog, LoggedMeal, GeneratorInput } from '@/types/log'
+import type { WeightEntry } from '@/types/weight'
+import { generateId } from '@/lib/utils'
 
 interface AppStore {
   // --- User ---
@@ -38,6 +40,13 @@ interface AppStore {
   // --- Language ---
   language: 'en' | 'vi'
   setLanguage: (lang: 'en' | 'vi') => void
+
+  // --- Weight tracking ---
+  weightEntries: WeightEntry[]
+  goalWeight: number | null
+  logWeight: (weight: number, note?: string) => void
+  deleteWeight: (id: string) => void
+  setGoalWeight: (weight: number) => void
 }
 
 const today = () => new Date().toISOString().split('T')[0]
@@ -159,6 +168,22 @@ export const useStore = create<AppStore>()(
       // --- Language ---
       language: 'vi',
       setLanguage: (language) => set({ language }),
+
+      // --- Weight tracking ---
+      weightEntries: [],
+      goalWeight: null,
+      logWeight: (weight, note) =>
+        set((state) => ({
+          weightEntries: [
+            ...state.weightEntries,
+            { id: generateId(), weight, loggedAt: Date.now(), note },
+          ],
+        })),
+      deleteWeight: (id) =>
+        set((state) => ({
+          weightEntries: state.weightEntries.filter((e) => e.id !== id),
+        })),
+      setGoalWeight: (goalWeight) => set({ goalWeight }),
     }),
     {
       name: 'fuelwise-store', // localStorage key
@@ -168,6 +193,8 @@ export const useStore = create<AppStore>()(
         savedRecipes: state.savedRecipes,
         dailyLog: state.dailyLog,
         language: state.language,
+        weightEntries: state.weightEntries,
+        goalWeight: state.goalWeight,
       }),
     }
   )
