@@ -122,8 +122,12 @@ export const en = {
     notePlaceholder: 'e.g. After morning workout',
     save: 'Save',
     earned: 'Earned',
+    mastered: 'Mastered',
     inProgress: 'In progress',
+    locked: 'Locked',
+    badgesEarned: (n: number, total: number) => `${n} / ${total} Badges Earned`,
     filters: { '7d': '7D', '30d': '30D', all: 'All' },
+    categories: { all: 'All', consistency: 'Consistency', weight: 'Weight' },
     milestoneList: {
       firstStep:  { label: 'First Step',      desc: 'Logged your first weight entry' },
       lost1:      { label: 'Down 1kg',        desc: 'Lost your first kilogram' },

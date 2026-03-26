@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { Plus, Trash2, TrendingDown, TrendingUp, Minus, Trophy, Target } from 'lucide-react'
+import { Plus, Trash2, TrendingDown, TrendingUp, Minus, Trophy, Target, Lock, Footprints, Calendar, Zap, Flame, Gem, Dumbbell, Star } from 'lucide-react'
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer,
@@ -28,6 +28,7 @@ export default function Progress() {
   const tp = t.progress
 
   const [filter, setFilter] = useState<Filter>('30d')
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'consistency' | 'weight'>('all')
   const [showModal, setShowModal] = useState(false)
   const [inputWeight, setInputWeight] = useState('')
   const [inputNote, setInputNote] = useState('')
@@ -84,29 +85,35 @@ export default function Progress() {
     })
 
     const base = [
-      { ...ml.firstStep,  icon: '🚀', ...earned(sortedEntries.length >= 1, 0) },
-      { ...ml.consistent, icon: '📅', ...earned(sortedEntries.length >= 5) },
-      { ...ml.halfway,    icon: '⚡', ...earned(goalWeight != null && goalPct >= 50) },
-      { ...ml.goalHit,    icon: '🏆', ...earned(goalWeight != null && goalPct >= 100) },
+      { ...ml.firstStep,  Icon: Footprints, color: '#4ade80', category: 'consistency' as const, ...earned(sortedEntries.length >= 1, 0) },
+      { ...ml.consistent, Icon: Calendar,   color: '#699cff', category: 'consistency' as const, ...earned(sortedEntries.length >= 5) },
+      { ...ml.halfway,    Icon: Zap,        color: '#facc15', category: 'weight'      as const, ...earned(goalWeight != null && goalPct >= 50) },
+      { ...ml.goalHit,    Icon: Trophy,     color: '#4ade80', category: 'weight'      as const, ...earned(goalWeight != null && goalPct >= 100) },
     ]
 
     if (isLose) {
       return [
         ...base,
-        { ...ml.lost1, icon: '📉', ...earned(-totalChange >= 1) },
-        { ...ml.lost3, icon: '🔥', ...earned(-totalChange >= 3) },
-        { ...ml.lost5, icon: '💎', ...earned(-totalChange >= 5) },
+        { ...ml.lost1, Icon: TrendingDown, color: '#4ade80', category: 'weight' as const, ...earned(-totalChange >= 1) },
+        { ...ml.lost3, Icon: Flame,        color: '#fb923c', category: 'weight' as const, ...earned(-totalChange >= 3) },
+        { ...ml.lost5, Icon: Gem,          color: '#c084fc', category: 'weight' as const, ...earned(-totalChange >= 5) },
       ]
     }
     if (isGain) {
       return [
         ...base,
-        { ...ml.gained1, icon: '💪', ...earned(totalChange >= 1) },
-        { ...ml.gained3, icon: '🔥', ...earned(totalChange >= 3) },
+        { ...ml.gained1, Icon: Dumbbell, color: '#4ade80', category: 'weight' as const, ...earned(totalChange >= 1) },
+        { ...ml.gained3, Icon: Star,     color: '#fb923c', category: 'weight' as const, ...earned(totalChange >= 3) },
       ]
     }
     return base
   }, [sortedEntries, totalChange, goalPct, goalWeight, isLose, isGain, tp.milestoneList])
+
+  const filteredMilestones = categoryFilter === 'all'
+    ? milestones
+    : milestones.filter((m) => m.category === categoryFilter)
+
+  const earnedCount = milestones.filter((m) => m.earned).length
 
   function handleLog() {
     const w = parseFloat(inputWeight)
@@ -245,7 +252,7 @@ export default function Progress() {
                 <Tooltip
                   contentStyle={{ background: '#0d1d10', border: '1px solid #172a1a', borderRadius: 12, fontSize: 12 }}
                   labelStyle={{ color: '#a0af9e' }}
-                  formatter={(v: number) => [`${v} kg`, '']}
+                  formatter={(v) => [`${v} kg`, '']}
                 />
                 <Area
                   type="monotone"
@@ -261,37 +268,107 @@ export default function Progress() {
           )}
         </section>
 
-        {/* Milestones + History bento */}
-        <section className="grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* Achievements */}
+        <section className="space-y-6">
 
-          {/* Milestones */}
-          <div className="md:col-span-5 space-y-4">
-            <h3 className="font-black text-xl px-1">{tp.milestones}</h3>
-            <div className="grid grid-cols-2 gap-3">
-              {milestones.map((m) => (
-                <div
-                  key={m.label}
-                  className={`bg-[#0d1d10] rounded-2xl p-4 flex flex-col items-center text-center border transition-all ${
-                    m.earned ? 'border-[#4ade80]/20' : 'border-[#172a1a] opacity-50'
-                  }`}
-                >
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-2xl mb-3 ${
-                    m.earned ? 'bg-[#4ade80]/10 ring-1 ring-[#4ade80]/30' : 'bg-[#172a1a]'
-                  }`}>
-                    {m.earned ? m.icon : <Trophy size={20} className="text-[#a0af9e]" />}
+          {/* Hero counter */}
+          <div className="relative overflow-hidden bg-[#0d1d10] rounded-[2rem] p-8 border border-[#172a1a]">
+            <div className="absolute -right-10 -top-10 w-48 h-48 bg-[#4ade80]/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <h2 className="font-black text-3xl text-white">{tp.milestones}</h2>
+                <div className="flex items-center gap-3 mt-3">
+                  <div className="flex -space-x-2">
+                    {milestones.filter((m) => m.earned).slice(0, 3).map((m) => (
+                      <div key={m.label} className="w-9 h-9 rounded-full border-2 border-[#0d1d10] flex items-center justify-center"
+                        style={{ background: `${m.color}20` }}>
+                        <m.Icon size={14} style={{ color: m.color }} />
+                      </div>
+                    ))}
                   </div>
-                  <p className="text-xs font-black text-white leading-tight">{m.label}</p>
-                  <p className="text-[10px] text-[#a0af9e] mt-1">{m.desc}</p>
-                  <span className={`text-[9px] font-bold uppercase tracking-widest mt-2 ${m.earned ? 'text-[#4ade80]' : 'text-[#3d4b3e]'}`}>
-                    {m.earned ? tp.earned : tp.inProgress}
-                  </span>
+                  <p className="text-[#a0af9e] text-sm">
+                    <span className="text-[#4ade80] font-black text-xl">{earnedCount}</span>
+                    {' / '}{milestones.length} {tp.badgesEarned(0, 0).split('0 / 0 ')[1]}
+                  </p>
                 </div>
-              ))}
+              </div>
+              {/* Category filter */}
+              <div className="flex gap-2 flex-wrap">
+                {(['all', 'consistency', 'weight'] as const).map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setCategoryFilter(cat)}
+                    className={`px-5 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${
+                      categoryFilter === cat
+                        ? 'bg-[#4ade80] text-[#051107]'
+                        : 'bg-[#172a1a] text-[#a0af9e] hover:text-white'
+                    }`}
+                  >
+                    {tp.categories[cat]}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
-          {/* History */}
-          <div className="md:col-span-7 space-y-4">
+          {/* Achievement grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {filteredMilestones.map((m) => (
+              <div
+                key={m.label}
+                className={`rounded-[1.5rem] p-6 flex flex-col items-center text-center border transition-all duration-300 hover:scale-[1.02] ${
+                  m.earned
+                    ? 'bg-[#0d1d10] border-[#4ade80]/15'
+                    : 'bg-[#08160b]/60 border-[#0d1d10] grayscale opacity-60'
+                }`}
+              >
+                {/* Icon circle */}
+                <div
+                  className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
+                  style={{
+                    background: m.earned ? `${m.color}15` : '#172a1a',
+                    filter: m.earned ? `drop-shadow(0 0 10px ${m.color}40)` : 'none',
+                  }}
+                >
+                  {m.earned
+                    ? <m.Icon size={28} style={{ color: m.color }} />
+                    : <Lock size={20} className="text-[#3d4b3e]" />
+                  }
+                </div>
+
+                {/* Status badge */}
+                <span
+                  className="text-[9px] font-black uppercase tracking-widest px-3 py-1 rounded-full mb-3"
+                  style={m.earned
+                    ? { background: `${m.color}20`, color: m.color }
+                    : { background: '#172a1a', color: '#3d4b3e' }
+                  }
+                >
+                  {m.earned ? tp.mastered : tp.locked}
+                </span>
+
+                <h3 className="text-sm font-black text-white leading-tight mb-1">{m.label}</h3>
+                <p className="text-[11px] text-[#a0af9e] leading-relaxed flex-1">{m.desc}</p>
+
+                {/* Footer */}
+                <div className="mt-4 pt-3 border-t border-[#172a1a] w-full">
+                  {m.earned && m.earnedAt ? (
+                    <p className="text-[10px] text-[#a0af9e] uppercase tracking-tight">
+                      {tp.earned} {new Date(m.earnedAt).toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </p>
+                  ) : m.earned ? (
+                    <p className="text-[10px] uppercase tracking-tight" style={{ color: m.color }}>✓ {tp.mastered}</p>
+                  ) : (
+                    <p className="text-[10px] text-[#3d4b3e] uppercase tracking-tight">{tp.inProgress}</p>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* History */}
+        <section className="space-y-4">
             <h3 className="font-black text-xl px-1">{tp.history}</h3>
             {sortedEntries.length === 0 ? (
               <div className="bg-[#0d1d10] rounded-2xl p-8 text-center text-[#a0af9e] text-sm border border-dashed border-[#172a1a]">
@@ -332,7 +409,6 @@ export default function Progress() {
                 })}
               </div>
             )}
-          </div>
         </section>
       </div>
 

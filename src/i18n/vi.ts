@@ -124,8 +124,12 @@ export const vi: Translations = {
     notePlaceholder: 'VD: Sau buổi tập sáng',
     save: 'Lưu',
     earned: 'Đã đạt',
+    mastered: 'Hoàn thành',
     inProgress: 'Đang thực hiện',
+    locked: 'Chưa mở',
+    badgesEarned: (n: number, total: number) => `${n} / ${total} Huy hiệu đạt được`,
     filters: { '7d': '7N', '30d': '30N', all: 'Tất cả' },
+    categories: { all: 'Tất cả', consistency: 'Kiên trì', weight: 'Cân nặng' },
     milestoneList: {
       firstStep:  { label: 'Bước đầu tiên',  desc: 'Đã ghi cân nặng lần đầu' },
       lost1:      { label: 'Giảm 1kg',        desc: 'Giảm được 1 kilogram đầu tiên' },
