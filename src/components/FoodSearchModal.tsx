@@ -28,14 +28,16 @@ export function FoodSearchModal({ mealType, onClose }: Props) {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<FoodProduct[]>([])
   const [loading, setLoading] = useState(false)
+  const [fetchError, setFetchError] = useState(false)
   const [servings, setServings] = useState<Record<string, string>>({})
   const [staged, setStaged] = useState<StagedItem[]>([])
 
   useEffect(() => {
-    if (query.trim().length < 2) { setResults([]); return }
+    if (query.trim().length < 2) { setResults([]); setFetchError(false); return }
 
     const timer = setTimeout(async () => {
       setLoading(true)
+      setFetchError(false)
       try {
         const res = await fetch(
           `https://world.openfoodfacts.org/cgi/search.pl?search_terms=${encodeURIComponent(query)}&search_simple=1&action=process&json=1&page_size=8&fields=product_name,nutriments`
@@ -57,10 +59,11 @@ export function FoodSearchModal({ mealType, onClose }: Props) {
               },
             }
           })
-          .filter((p: FoodProduct) => p.per100g.calories > 0)
+          .filter((p: FoodProduct) => p.per100g.calories >= 0)
         setResults(products)
       } catch {
         setResults([])
+        setFetchError(true)
       } finally {
         setLoading(false)
       }
@@ -159,6 +162,8 @@ export function FoodSearchModal({ mealType, onClose }: Props) {
             <div className="flex items-center justify-center gap-2 py-8 text-[#a0af9e] text-sm">
               <Loader2 size={18} className="animate-spin" /> {tf.searching}
             </div>
+          ) : fetchError ? (
+            <p className="py-8 text-center text-red-400 text-sm">Connection error. Check your internet and try again.</p>
           ) : results.length === 0 && query.length >= 2 ? (
             <p className="py-8 text-center text-[#a0af9e] text-sm">{tf.noResults}</p>
           ) : (
