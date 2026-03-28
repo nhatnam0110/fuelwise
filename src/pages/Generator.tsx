@@ -1,10 +1,11 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { X, Loader2, Search, Sparkles, UtensilsCrossed, Globe } from 'lucide-react'
+import { X, Loader2, Search, Sparkles, UtensilsCrossed, Globe, ClipboardList } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { useStore } from '@/store'
 import { useT } from '@/hooks/useT'
 import { generateRecipe } from '@/lib/claude'
+import { FoodSearchModal } from '@/components/FoodSearchModal'
 
 import breakfastImg from '@/assets/breakfast.jpg'
 import lunchImg from '@/assets/lunch.jpg'
@@ -26,6 +27,7 @@ export default function Generator() {
 
   const remaining = getRemainingMacros()
   const [ingredientInput, setIngredientInput] = useState('')
+  const [showFoodSearch, setShowFoodSearch] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const addIngredient = (val = ingredientInput.trim()) => {
@@ -53,6 +55,7 @@ export default function Generator() {
   }
 
   return (
+    <>
     <PageWrapper className="bg-[#051107] text-white min-h-screen pt-24 pb-24 md:pb-8 px-6 md:px-12 lg:px-24">
 
       {/* Page header */}
@@ -235,6 +238,13 @@ export default function Generator() {
                 )}
               </button>
 
+              <button
+                onClick={() => setShowFoodSearch(true)}
+                className="w-full py-3 rounded-full border border-[#3d4b3e] text-[#a0af9e] font-bold text-sm flex items-center justify-center gap-2 hover:border-[#4ade80]/40 hover:text-white transition-all"
+              >
+                <ClipboardList size={16} /> {t.foodSearch.title}
+              </button>
+
               <p className="text-[10px] text-center text-[#a0af9e]/40 leading-relaxed">{t.generator.disclaimer}</p>
             </div>
           </div>
@@ -242,5 +252,13 @@ export default function Generator() {
       </div>
 
     </PageWrapper>
+
+    {showFoodSearch && (
+      <FoodSearchModal
+        mealType={generatorInput.mealType}
+        onClose={() => setShowFoodSearch(false)}
+      />
+    )}
+    </>
   )
 }
