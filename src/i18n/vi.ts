@@ -85,6 +85,15 @@ export const vi: Translations = {
       snack: 'Bữa nhẹ',
     },
   },
+  foodSearch: {
+    title: 'Ghi thực phẩm',
+    placeholder: 'Tìm món ăn (VD: ức gà, cơm...)',
+    searching: 'Đang tìm...',
+    noResults: 'Không tìm thấy kết quả.',
+    per100g: 'per 100g',
+    logBtn: 'Ghi',
+    hint: 'Dữ liệu từ Open Food Facts',
+  },
   result: {
     backToGenerator: '← Quay lại',
     macroFit: 'Độ phù hợp',

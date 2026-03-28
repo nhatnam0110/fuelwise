@@ -83,6 +83,15 @@ export const en = {
       snack: 'Snack',
     },
   },
+  foodSearch: {
+    title: 'Log Food',
+    placeholder: 'Search food (e.g. chicken breast, rice...)',
+    searching: 'Searching...',
+    noResults: 'No results found.',
+    per100g: 'per 100g',
+    logBtn: 'Log',
+    hint: 'Powered by Open Food Facts',
+  },
   result: {
     backToGenerator: '← Back to Generator',
     macroFit: 'Macro fit',
