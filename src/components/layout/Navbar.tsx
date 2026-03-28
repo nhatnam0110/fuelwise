@@ -1,16 +1,12 @@
 import { NavLink, useNavigate } from 'react-router-dom'
-import { Bell, Settings } from 'lucide-react'
+import { Settings } from 'lucide-react'
 import { useStore } from '@/store'
 import { useT } from '@/hooks/useT'
 
 export function Navbar() {
-  const { profile, language, setLanguage } = useStore()
+  const { language, setLanguage } = useStore()
   const navigate = useNavigate()
   const t = useT()
-
-  const initials = profile?.name
-    ? profile.name.split(' ').map((w) => w[0]).join('').slice(0, 2).toUpperCase()
-    : 'FW'
 
   return (
     <nav className="hidden md:grid grid-cols-3 fixed top-0 w-full bg-[#051107]/90 backdrop-blur-xl text-white px-8 h-16 items-center z-50 border-b border-[#0d2a12]">

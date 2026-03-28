@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { X, Loader2, Search, Sparkles, UtensilsCrossed, SlidersHorizontal, Globe } from 'lucide-react'
+import { X, Loader2, Search, Sparkles, UtensilsCrossed, Globe } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { useStore } from '@/store'
 import { useT } from '@/hooks/useT'
@@ -38,14 +38,6 @@ export default function Generator() {
   const removeIngredient = (item: string) =>
     updateGeneratorInput({ ingredients: generatorInput.ingredients.filter((i) => i !== item) })
 
-  const toggleFilter = (f: string, noneLabel: string) => {
-    if (f === noneLabel) { updateGeneratorInput({ dietaryFilters: [] }); return }
-    const filters = generatorInput.dietaryFilters
-    updateGeneratorInput({
-      dietaryFilters: filters.includes(f) ? filters.filter((x) => x !== f) : [...filters, f],
-    })
-  }
-
   const handleGenerate = async () => {
     setError(null)
     setLoading(true)
@@ -59,8 +51,6 @@ export default function Generator() {
       setLoading(false)
     }
   }
-
-  const noneLabel = t.generator.dietaryOptions[0]
 
   return (
     <PageWrapper className="bg-[#051107] text-white min-h-screen pt-24 pb-24 md:pb-8 px-6 md:px-12 lg:px-24">
@@ -163,28 +153,8 @@ export default function Generator() {
             </div>
           </section>
 
-          {/* Dietary filters + Cuisine */}
+          {/* Cuisine */}
           <section className="space-y-6">
-            <div>
-              <div className="flex items-center gap-2 mb-3">
-                <SlidersHorizontal size={16} className="text-[#4ade80]" />
-                <h3 className="font-black text-base text-white">{t.generator.dietaryTitle}</h3>
-              </div>
-              <div className="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
-                {t.generator.dietaryOptions.map((f) => {
-                  const active = f === noneLabel ? generatorInput.dietaryFilters.length === 0 : generatorInput.dietaryFilters.includes(f)
-                  return (
-                    <button key={f} onClick={() => toggleFilter(f, noneLabel)}
-                      className={`px-5 py-2 rounded-full text-sm font-semibold whitespace-nowrap transition-colors ${
-                        active ? 'bg-[#4ade80] text-[#051107]' : 'bg-[#122315] text-[#a0af9e] hover:text-white'
-                      }`}>
-                      {f}
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
-
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <Globe size={16} className="text-[#4ade80]" />
