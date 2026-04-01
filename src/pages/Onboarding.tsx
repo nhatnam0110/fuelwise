@@ -5,7 +5,7 @@ import { Minus, Plus } from 'lucide-react'
 import { useStore } from '@/store'
 import { calculateMacroTargets } from '@/lib/tdee'
 import type { UserProfile } from '@/types/user'
-import onboardingBg from '@/assets/onboardingbg.png'
+import onboardingBg from '@/assets/herobg.jpg'
 
 type FormData = Omit<UserProfile, 'onboardingComplete'>
 
