@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
@@ -10,13 +10,17 @@ import type { IncomingMessage, ServerResponse } from 'node:http'
 // For production deploy, replace this with a serverless function
 // (e.g. Vercel /api/generate.ts or Netlify function) that does the same.
 function anthropicProxyPlugin(): Plugin {
+  let apiKey = ''
   return {
     name: 'anthropic-proxy',
+    config(_, { mode }) {
+      const env = loadEnv(mode, process.cwd(), '')
+      apiKey = env.ANTHROPIC_API_KEY ?? ''
+    },
     configureServer(server) {
       server.middlewares.use(
         '/api/generate',
         (req: IncomingMessage, res: ServerResponse) => {
-          const apiKey = process.env.ANTHROPIC_API_KEY
           if (!apiKey) {
             res.writeHead(500, { 'Content-Type': 'application/json' })
             res.end(JSON.stringify({ error: 'ANTHROPIC_API_KEY not set in .env' }))
