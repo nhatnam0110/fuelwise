@@ -142,7 +142,7 @@ export default function Progress() {
   }, [chartData])
 
   return (
-    <PageWrapper className="bg-[#051107] text-white">
+    <PageWrapper className="text-white">
       <div className="pt-20 px-4 md:px-10 lg:px-20 max-w-5xl mx-auto pb-32 md:pb-16 space-y-10">
 
         {/* Hero */}

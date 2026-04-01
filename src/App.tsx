@@ -1,4 +1,5 @@
 import { useEffect, lazy, Suspense } from 'react'
+import herobg from '@/assets/herobg.png'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -34,7 +35,7 @@ function AppShell() {
     resetDailyLog()
   }
 
-  return (
+  const content = (
     <>
       {!isOnboarding && <Navbar />}
       <Suspense fallback={null}>
@@ -44,6 +45,19 @@ function AppShell() {
       </Suspense>
       {!isOnboarding && <BottomNav />}
     </>
+  )
+
+  if (isOnboarding) return content
+
+  return (
+    <div
+      className="min-h-screen bg-cover bg-center bg-fixed"
+      style={{ backgroundImage: `url(${herobg})` }}
+    >
+      <div className="min-h-screen bg-[#051107]/85">
+        {content}
+      </div>
+    </div>
   )
 }
 

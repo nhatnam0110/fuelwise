@@ -40,7 +40,7 @@ export default function Result() {
     (macroFitScore ?? 0) >= 50 ? 'text-yellow-400' : 'text-red-400'
 
   return (
-    <PageWrapper className="bg-[#051107] text-white pt-24 px-4 md:px-12 lg:px-24 pb-12">
+    <PageWrapper className="text-white pt-24 px-4 md:px-12 lg:px-24 pb-12">
       <div className="max-w-4xl mx-auto space-y-8">
 
         {/* Back */}

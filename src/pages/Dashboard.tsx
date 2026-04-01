@@ -79,7 +79,7 @@ export default function Dashboard() {
   }
 
   return (
-    <PageWrapper className="bg-[#051107] text-white">
+    <PageWrapper className="text-white">
       <div className="pt-20 px-4 md:px-10 lg:px-20 max-w-7xl mx-auto pb-28 md:pb-12 space-y-10">
 
         {/* Hero */}

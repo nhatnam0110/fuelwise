@@ -56,7 +56,7 @@ export default function Generator() {
 
   return (
     <>
-    <PageWrapper className="bg-[#051107] text-white min-h-screen pt-24 pb-24 md:pb-8 px-6 md:px-12 lg:px-24">
+    <PageWrapper className="text-white min-h-screen pt-24 pb-24 md:pb-8 px-6 md:px-12 lg:px-24">
 
       {/* Page header */}
       <header className="mb-10">
