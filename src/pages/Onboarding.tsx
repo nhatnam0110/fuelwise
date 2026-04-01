@@ -313,8 +313,8 @@ export default function Onboarding() {
     <div className="min-h-screen text-white flex items-center justify-center px-4 py-6 md:px-8 md:py-12 relative overflow-x-hidden">
       {/* Background image with dark overlay */}
       <div className="fixed inset-0 z-0">
-        <img src={onboardingBg} alt="" className="w-full h-full object-cover opacity-40" />
-        <div className="absolute inset-0 bg-[#06140A]/85" />
+        <img src={onboardingBg} alt="" className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-[#051107]/85" />
       </div>
       <div className="relative z-10 w-full max-w-lg">
 
