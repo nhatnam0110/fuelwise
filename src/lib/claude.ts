@@ -1,4 +1,3 @@
-import Anthropic from '@anthropic-ai/sdk'
 import type { Recipe, Nutrition } from '@/types/recipe'
 import type { GeneratorInput } from '@/types/log'
 import { generateId } from '@/lib/utils'
@@ -84,30 +83,27 @@ export async function generateRecipe(
   remaining: Nutrition,
   language: 'en' | 'vi' = 'en'
 ): Promise<Recipe> {
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY
-
-  if (!apiKey || apiKey === 'your_key_here') {
-    throw new Error('API key not set. Add your key to .env as VITE_ANTHROPIC_API_KEY.')
-  }
-
-  const client = new Anthropic({
-    apiKey,
-    dangerouslyAllowBrowser: true,
-  })
-
   const target = scaleMacros(remaining, input.mealSize)
 
-  const message = await client.messages.create({
-    model: 'claude-haiku-4-5-20251001',
-    max_tokens: 1600,
-    system: buildSystemPrompt(language),
-    messages: [
-      { role: 'user', content: buildUserPrompt(input, target, language) },
-    ],
+  const res = await fetch('/api/generate', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-haiku-4-5-20251001',
+      max_tokens: 1600,
+      system: buildSystemPrompt(language),
+      messages: [{ role: 'user', content: buildUserPrompt(input, target, language) }],
+    }),
   })
 
-  const raw = message.content[0]
-  if (raw.type !== 'text') {
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}))
+    throw new Error((err as { error?: string }).error ?? `Request failed (${res.status})`)
+  }
+
+  const message = await res.json()
+  const raw = message.content?.[0]
+  if (!raw || raw.type !== 'text') {
     throw new Error('Unexpected response format from Claude API.')
   }
 
