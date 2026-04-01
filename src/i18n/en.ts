@@ -149,6 +149,17 @@ export const en = {
       consistent: { label: 'Consistent',      desc: 'Logged weight 5 or more times' },
     },
   },
+  history: {
+    title: 'Food History',
+    subtitle: 'Your meal log over time',
+    filters: { '7d': '7D', '30d': '30D', '90d': '90D', all: 'All' },
+    noHistory: 'No history yet. Start logging meals!',
+    meals: 'meals',
+    expandDay: 'Show meals',
+    collapseDay: 'Hide meals',
+    nav: 'History',
+    navShort: 'Log',
+  },
   onboarding: {
     step: 'Step',
     step1Title: 'Tell us\nabout you',

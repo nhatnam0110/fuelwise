@@ -19,6 +19,7 @@ const Generator  = lazy(() => import('@/pages/Generator'))
 const Result     = lazy(() => import('@/pages/Result'))
 const Saved      = lazy(() => import('@/pages/Saved'))
 const Progress   = lazy(() => import('@/pages/Progress'))
+const History    = lazy(() => import('@/pages/History'))
 
 function AppShell() {
   const location = useLocation()
@@ -84,6 +85,7 @@ const router = createBrowserRouter([
       { path: '/recipe/:id', element: <Result /> },
       { path: '/saved',      element: <Saved /> },
       { path: '/progress',   element: <Progress /> },
+      { path: '/history',    element: <History /> },
       { path: '/',           element: <Navigate to="/dashboard" replace /> },
     ],
   },

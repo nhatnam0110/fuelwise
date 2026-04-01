@@ -151,6 +151,17 @@ export const vi: Translations = {
       consistent: { label: 'Kiên trì',        desc: 'Đã ghi cân nặng 5 lần trở lên' },
     },
   },
+  history: {
+    title: 'Lịch sử bữa ăn',
+    subtitle: 'Nhật ký dinh dưỡng theo thời gian',
+    filters: { '7d': '7N', '30d': '30N', '90d': '90N', all: 'Tất cả' },
+    noHistory: 'Chưa có lịch sử. Hãy bắt đầu ghi bữa ăn!',
+    meals: 'bữa',
+    expandDay: 'Xem bữa ăn',
+    collapseDay: 'Ẩn bữa ăn',
+    nav: 'Lịch sử',
+    navShort: 'Nhật ký',
+  },
   onboarding: {
     step: 'Bước',
     step1Title: 'Cho chúng tôi\nbiết về bạn',

@@ -18,10 +18,11 @@ export function Navbar() {
       {/* Nav links — pill container */}
       <div className="flex items-center justify-center gap-1 bg-[#0a1a0c] border border-[#172a1a] rounded-full px-1.5 py-1.5 w-fit mx-auto">
         {[
-          { to: '/dashboard', label: t.nav.dashboard },
-          { to: '/generate',  label: t.nav.generate  },
-          { to: '/progress',  label: t.nav.progress  },
-          { to: '/saved',     label: t.nav.saved      },
+          { to: '/dashboard', label: t.nav.dashboard    },
+          { to: '/generate',  label: t.nav.generate    },
+          { to: '/history',   label: t.history.nav     },
+          { to: '/progress',  label: t.nav.progress    },
+          { to: '/saved',     label: t.nav.saved       },
         ].map(({ to, label }) => (
           <NavLink
             key={to}

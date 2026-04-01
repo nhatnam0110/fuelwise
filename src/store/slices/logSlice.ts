@@ -5,6 +5,7 @@ import type { AppStore } from '../types'
 
 export interface LogSlice {
   dailyLog: DailyLog | null
+  logHistory: DailyLog[]
   logMeal: (meal: LoggedMeal) => void
   deleteLoggedMeal: (loggedAt: number) => void
   resetDailyLog: () => void
@@ -15,8 +16,11 @@ const today = () => new Date().toISOString().split('T')[0]
 
 const emptyNutrition = (): Nutrition => ({ calories: 0, protein: 0, carbs: 0, fat: 0 })
 
+const MAX_HISTORY_DAYS = 365
+
 export const createLogSlice: StateCreator<AppStore, [], [], LogSlice> = (set, get) => ({
   dailyLog: null,
+  logHistory: [],
 
   logMeal: (meal) =>
     set((state) => {
@@ -48,7 +52,18 @@ export const createLogSlice: StateCreator<AppStore, [], [], LogSlice> = (set, ge
     }),
 
   resetDailyLog: () =>
-    set({ dailyLog: { date: today(), meals: [], totals: emptyNutrition() } }),
+    set((state) => {
+      // Archive current day before wiping, cap at MAX_HISTORY_DAYS
+      const history = state.dailyLog && state.dailyLog.meals.length > 0
+        ? [state.dailyLog, ...state.logHistory]
+            .filter((d, i, arr) => arr.findIndex((x) => x.date === d.date) === i)
+            .slice(0, MAX_HISTORY_DAYS)
+        : state.logHistory
+      return {
+        logHistory: history,
+        dailyLog: { date: today(), meals: [], totals: emptyNutrition() },
+      }
+    }),
 
   getRemainingMacros: () => {
     const { macroTargets, dailyLog } = get()

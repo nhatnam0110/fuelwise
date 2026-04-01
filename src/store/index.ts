@@ -27,6 +27,7 @@ export const useStore = create<AppStore>()(
         macroTargets: state.macroTargets,
         savedRecipes: state.savedRecipes,
         dailyLog: state.dailyLog,
+        logHistory: state.logHistory,
         language: state.language,
         weightEntries: state.weightEntries,
         goalWeight: state.goalWeight,
