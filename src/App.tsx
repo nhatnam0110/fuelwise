@@ -1,5 +1,5 @@
 import { useEffect, lazy, Suspense } from 'react'
-import herobg from '@/assets/herobg.png'
+import herobg from '@/assets/herobg.jpg'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -51,7 +51,7 @@ function AppShell() {
 
   return (
     <div
-      className="min-h-screen bg-cover bg-center bg-fixed"
+      className="min-h-screen bg-cover bg-center"
       style={{ backgroundImage: `url(${herobg})` }}
     >
       <div className="min-h-screen bg-[#051107]/85">
