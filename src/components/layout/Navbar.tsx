@@ -51,7 +51,7 @@ export function Navbar() {
         </button>
 
         <button
-          onClick={() => navigate('/saved')}
+          onClick={() => navigate('/settings')}
           className="text-[#4ade80] hover:bg-[#0d2a12] rounded-lg p-2 transition-all"
           title={t.nav.settings}
         >

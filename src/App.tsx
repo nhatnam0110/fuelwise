@@ -20,6 +20,7 @@ const Result     = lazy(() => import('@/pages/Result'))
 const Saved      = lazy(() => import('@/pages/Saved'))
 const Progress   = lazy(() => import('@/pages/Progress'))
 const History    = lazy(() => import('@/pages/History'))
+const Settings   = lazy(() => import('@/pages/Settings'))
 
 function AppShell() {
   const location = useLocation()
@@ -86,6 +87,7 @@ const router = createBrowserRouter([
       { path: '/saved',      element: <Saved /> },
       { path: '/progress',   element: <Progress /> },
       { path: '/history',    element: <History /> },
+      { path: '/settings',   element: <Settings /> },
       { path: '/',           element: <Navigate to="/dashboard" replace /> },
     ],
   },
