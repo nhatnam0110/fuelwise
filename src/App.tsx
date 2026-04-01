@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import {
   createBrowserRouter,
   RouterProvider,
@@ -10,13 +10,14 @@ import { AnimatePresence } from 'framer-motion'
 import { useStore } from '@/store'
 import { Navbar } from '@/components/layout/Navbar'
 import { BottomNav } from '@/components/layout/BottomNav'
-import Onboarding from '@/pages/Onboarding'
-import Dashboard from '@/pages/Dashboard'
-import Generator from '@/pages/Generator'
-import Result from '@/pages/Result'
-import Saved from '@/pages/Saved'
-import Progress from '@/pages/Progress'
 import { formatDate } from '@/lib/utils'
+
+const Onboarding = lazy(() => import('@/pages/Onboarding'))
+const Dashboard  = lazy(() => import('@/pages/Dashboard'))
+const Generator  = lazy(() => import('@/pages/Generator'))
+const Result     = lazy(() => import('@/pages/Result'))
+const Saved      = lazy(() => import('@/pages/Saved'))
+const Progress   = lazy(() => import('@/pages/Progress'))
 
 function AppShell() {
   const location = useLocation()
@@ -36,9 +37,11 @@ function AppShell() {
   return (
     <>
       {!isOnboarding && <Navbar />}
-      <AnimatePresence mode="wait">
-        <Outlet key={location.pathname} />
-      </AnimatePresence>
+      <Suspense fallback={null}>
+        <AnimatePresence mode="wait">
+          <Outlet key={location.pathname} />
+        </AnimatePresence>
+      </Suspense>
       {!isOnboarding && <BottomNav />}
     </>
   )
