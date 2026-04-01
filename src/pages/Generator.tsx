@@ -4,7 +4,7 @@ import { X, Loader2, Search, Sparkles, UtensilsCrossed, Globe, ClipboardList } f
 import { PageWrapper } from '@/components/layout/PageWrapper'
 import { useStore } from '@/store'
 import { useT } from '@/hooks/useT'
-import { generateRecipe } from '@/lib/claude'
+import { generateRecipe } from '@/services/claude'
 import { FoodSearchModal } from '@/features/food-search/FoodSearchModal'
 
 import breakfastImg from '@/assets/breakfast.jpg'
