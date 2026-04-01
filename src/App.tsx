@@ -11,6 +11,7 @@ import { AnimatePresence } from 'framer-motion'
 import { useStore } from '@/store'
 import { Navbar } from '@/components/layout/Navbar'
 import { BottomNav } from '@/components/layout/BottomNav'
+import { MobileHeader } from '@/components/layout/MobileHeader'
 import { formatDate } from '@/lib/utils'
 
 const Onboarding = lazy(() => import('@/pages/Onboarding'))
@@ -40,6 +41,7 @@ function AppShell() {
   const content = (
     <>
       {!isOnboarding && <Navbar />}
+      {!isOnboarding && <MobileHeader />}
       <Suspense fallback={null}>
         <AnimatePresence mode="wait">
           <Outlet key={location.pathname} />
