@@ -5,7 +5,7 @@ import { PageWrapper } from '@/components/layout/PageWrapper'
 import { useStore } from '@/store'
 import { useT } from '@/hooks/useT'
 import { generateRecipe } from '@/lib/claude'
-import { FoodSearchModal } from '@/components/FoodSearchModal'
+import { FoodSearchModal } from '@/features/food-search/FoodSearchModal'
 
 import breakfastImg from '@/assets/breakfast.jpg'
 import lunchImg from '@/assets/lunch.jpg'
