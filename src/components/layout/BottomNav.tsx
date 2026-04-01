@@ -14,7 +14,7 @@ export function BottomNav() {
   ]
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-[#051107]/95 backdrop-blur-xl border-t border-[#0d2a12] flex items-center justify-around py-3 px-4 rounded-t-3xl shadow-[0_-8px_24px_rgba(0,0,0,0.4)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 lg:hidden bg-[#051107]/95 backdrop-blur-xl border-t border-[#0d2a12] flex items-center justify-around py-3 px-4 rounded-t-3xl shadow-[0_-8px_24px_rgba(0,0,0,0.4)]">
       {tabs.map(({ to, icon: Icon, label }) => (
         <NavLink
           key={to}

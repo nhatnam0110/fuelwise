@@ -9,7 +9,7 @@ export function Navbar() {
   const t = useT()
 
   return (
-    <nav className="hidden md:grid grid-cols-3 fixed top-0 w-full bg-[#051107]/90 backdrop-blur-xl text-white px-8 h-16 items-center z-50 border-b border-[#0d2a12]">
+    <nav className="hidden lg:grid grid-cols-3 fixed top-0 w-full bg-[#051107]/90 backdrop-blur-xl text-white px-8 h-16 items-center z-50 border-b border-[#0d2a12]">
       {/* Logo */}
       <span className="text-2xl font-black tracking-tighter">
         Fuel<span className="text-[#4ade80]">Wise</span>

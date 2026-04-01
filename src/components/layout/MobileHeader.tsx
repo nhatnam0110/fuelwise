@@ -7,7 +7,7 @@ export function MobileHeader() {
   const { language, setLanguage } = useStore()
 
   return (
-    <header className="md:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 h-14 bg-[#051107]/90 backdrop-blur-xl border-b border-[#0d2a12]">
+    <header className="lg:hidden fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-5 h-14 bg-[#051107]/90 backdrop-blur-xl border-b border-[#0d2a12]">
       <span className="text-xl font-black tracking-tighter text-white">
         Fuel<span className="text-[#4ade80]">Wise</span>
       </span>
