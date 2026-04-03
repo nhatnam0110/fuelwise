@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { Settings } from 'lucide-react'
-import { useStore } from '@/store'
+import { useStore } from '@/state'
 
 export function MobileHeader() {
   const navigate = useNavigate()
