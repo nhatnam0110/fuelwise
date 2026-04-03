@@ -1,4 +1,4 @@
-import { useStore } from '@/store'
+import { useStore } from '@/state'
 import { en } from '@/i18n/en'
 import { vi } from '@/i18n/vi'
 

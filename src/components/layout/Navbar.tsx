@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Settings } from 'lucide-react'
-import { useStore } from '@/store'
+import { useStore } from '@/state'
 import { useT } from '@/hooks/useT'
 
 export function Navbar() {
