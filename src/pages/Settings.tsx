@@ -1,69 +1,21 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Check, Minus, Plus } from 'lucide-react'
+import { Check } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
-import { useStore } from '@/store'
+import { useStore } from '@/state'
 import { calculateMacroTargets } from '@/lib/tdee'
+import { Stepper } from '@/features/user/components/Stepper'
 import type { UserProfile } from '@/types/user'
 
-type FormData = Omit<UserProfile, 'onboardingComplete'>
+type SettingsForm = Omit<UserProfile, 'onboardingComplete'>
 
-function Stepper({
-  label, value, unit, min, max, step = 1, onChange,
-}: {
-  label: string; value: number; unit: string
-  min: number; max: number; step?: number
-  onChange: (v: number) => void
-}) {
-  const [raw, setRaw] = useState(String(value))
-
-  const handleButton = (next: number) => { onChange(next); setRaw(String(next)) }
-  const handleBlur = () => {
-    const parsed = Number(raw)
-    const clamped = isNaN(parsed) ? value : Math.min(max, Math.max(min, parsed))
-    onChange(clamped)
-    setRaw(String(clamped))
-  }
-
-  return (
-    <div className="bg-[#0d1d10] border border-[#1a3a1f] rounded-xl p-4">
-      <div className="flex items-center gap-1.5 mb-3">
-        <p className="text-[10px] tracking-[3px] uppercase text-[#4ade80] font-bold">{label}</p>
-        <span className="text-[10px] tracking-[2px] uppercase text-[#2d5a35] font-bold">· {unit}</span>
-      </div>
-      <div className="flex items-center justify-between gap-3">
-        <button
-          onClick={() => handleButton(Math.max(min, value - step))}
-          className="w-9 h-9 rounded-full border border-[#1a3a1f] flex items-center justify-center text-[#4ade80] hover:border-[#4ade80] transition-colors"
-        >
-          <Minus size={14} />
-        </button>
-        <input
-          type="text"
-          inputMode="numeric"
-          value={raw}
-          onChange={(e) => setRaw(e.target.value)}
-          onBlur={handleBlur}
-          className="w-16 bg-transparent text-white text-3xl font-black text-center focus:outline-none caret-[#4ade80]"
-        />
-        <button
-          onClick={() => handleButton(Math.min(max, value + step))}
-          className="w-9 h-9 rounded-full border border-[#1a3a1f] flex items-center justify-center text-[#4ade80] hover:border-[#4ade80] transition-colors"
-        >
-          <Plus size={14} />
-        </button>
-      </div>
-    </div>
-  )
-}
-
-const GOALS: { value: FormData['goal']; emoji: string; label: string; desc: string }[] = [
+const GOALS: { value: SettingsForm['goal']; emoji: string; label: string; desc: string }[] = [
   { value: 'lose',     emoji: '🔥', label: 'Lose Weight', desc: '−500 kcal/day calorie deficit' },
   { value: 'gain',     emoji: '💪', label: 'Gain Muscle', desc: '+300 kcal/day calorie surplus' },
   { value: 'maintain', emoji: '⚖️', label: 'Maintain',    desc: 'Stay at your current weight'   },
 ]
 
-const ACTIVITY_LEVELS: { value: FormData['activityLevel']; emoji: string; label: string; desc: string }[] = [
+const ACTIVITY_LEVELS: { value: SettingsForm['activityLevel']; emoji: string; label: string; desc: string }[] = [
   { value: 'sedentary', emoji: '🪑', label: 'Sedentary',      desc: 'Little or no exercise'           },
   { value: 'light',     emoji: '🚶', label: 'Lightly Active', desc: 'Light exercise 1–3 days/week'    },
   { value: 'moderate',  emoji: '🏃', label: 'Moderate',       desc: 'Moderate exercise 3–5 days/week' },
@@ -74,7 +26,7 @@ export default function Settings() {
   const navigate = useNavigate()
   const { profile, setProfile, setMacroTargets } = useStore()
 
-  const [form, setForm] = useState<FormData>({
+  const [form, setForm] = useState<SettingsForm>({
     name:          profile?.name          ?? '',
     age:           profile?.age           ?? 25,
     weight:        profile?.weight        ?? 70,
@@ -85,7 +37,7 @@ export default function Settings() {
   })
   const [saved, setSaved] = useState(false)
 
-  const update = (partial: Partial<FormData>) => setForm((f) => ({ ...f, ...partial }))
+  const update = (partial: Partial<SettingsForm>) => setForm((f) => ({ ...f, ...partial }))
 
   const preview = calculateMacroTargets({ ...form, onboardingComplete: true })
 

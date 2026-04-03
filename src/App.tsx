@@ -8,7 +8,7 @@ import {
   Outlet,
 } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
-import { useStore } from '@/store'
+import { useStore } from '@/state'
 import { Navbar } from '@/components/layout/Navbar'
 import { BottomNav } from '@/components/layout/BottomNav'
 import { MobileHeader } from '@/components/layout/MobileHeader'

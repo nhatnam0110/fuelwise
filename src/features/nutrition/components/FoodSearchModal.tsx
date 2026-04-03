@@ -1,8 +1,9 @@
 import { useState, useMemo } from 'react'
 import { Search, X, Loader2, Plus, Trash2 } from 'lucide-react'
-import { useStore } from '@/store'
+import { useStore } from '@/state'
 import { useT } from '@/hooks/useT'
-import { useFoodSearch, type FoodProduct } from './useFoodSearch'
+import { useFoodSearch } from '../hooks/useFoodSearch'
+import type { FoodProduct } from '../types'
 
 interface StagedItem {
   food: FoodProduct
@@ -174,7 +175,6 @@ export function FoodSearchModal({ mealType, onClose }: Props) {
               })}
             </div>
 
-            {/* Totals + Submit */}
             <div className="px-5 py-4 border-t border-[#172a1a] space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-xs font-black text-[#a0af9e] uppercase tracking-widest">Total</span>

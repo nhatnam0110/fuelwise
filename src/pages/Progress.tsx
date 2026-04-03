@@ -1,11 +1,12 @@
 import { useState, useMemo } from 'react'
 import { Plus, Trash2, TrendingDown, TrendingUp, Minus, Trophy, Target, Lock, Footprints, Calendar, Zap, Flame, Gem, Dumbbell, Star } from 'lucide-react'
+import { WeightModal } from '@/features/progress/components/WeightModal'
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer,
 } from 'recharts'
 import { PageWrapper } from '@/components/layout/PageWrapper'
-import { useStore } from '@/store'
+import { useStore } from '@/state'
 import { useT } from '@/hooks/useT'
 
 type Filter = '7d' | '30d' | 'all'
@@ -30,8 +31,6 @@ export default function Progress() {
   const [filter, setFilter] = useState<Filter>('30d')
   const [categoryFilter, setCategoryFilter] = useState<'all' | 'consistency' | 'weight'>('all')
   const [showModal, setShowModal] = useState(false)
-  const [inputWeight, setInputWeight] = useState('')
-  const [inputNote, setInputNote] = useState('')
   const [goalInput, setGoalInput] = useState('')
   const [editingGoal, setEditingGoal] = useState(false)
 
@@ -114,15 +113,6 @@ export default function Progress() {
     : milestones.filter((m) => m.category === categoryFilter)
 
   const earnedCount = milestones.filter((m) => m.earned).length
-
-  function handleLog() {
-    const w = parseFloat(inputWeight)
-    if (isNaN(w) || w <= 0) return
-    logWeight(w, inputNote.trim() || undefined)
-    setInputWeight('')
-    setInputNote('')
-    setShowModal(false)
-  }
 
   function handleSetGoal() {
     const g = parseFloat(goalInput)
@@ -421,55 +411,20 @@ export default function Progress() {
         <Plus size={28} strokeWidth={3} />
       </button>
 
-      {/* Log Weight Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center bg-black/60 backdrop-blur-sm px-4 pb-6 md:pb-0"
-          onClick={(e) => e.target === e.currentTarget && setShowModal(false)}>
-          <div className="w-full max-w-md bg-[#0d1d10] rounded-3xl p-6 border border-[#172a1a] space-y-5">
-            <h3 className="text-xl font-black text-white">{tp.logWeight}</h3>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-[#a0af9e] uppercase tracking-widest">{tp.weightLabel}</label>
-              <input
-                type="number"
-                step="0.1"
-                value={inputWeight}
-                onChange={(e) => setInputWeight(e.target.value)}
-                placeholder={tp.weightPlaceholder}
-                autoFocus
-                className="w-full bg-[#172a1a] text-white rounded-xl px-4 py-3 text-lg font-black outline-none focus:ring-2 focus:ring-[#4ade80]"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-xs font-bold text-[#a0af9e] uppercase tracking-widest">{tp.noteLabel}</label>
-              <input
-                type="text"
-                value={inputNote}
-                onChange={(e) => setInputNote(e.target.value)}
-                placeholder={tp.notePlaceholder}
-                className="w-full bg-[#172a1a] text-white rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#4ade80]"
-              />
-            </div>
-
-            <div className="flex gap-3 pt-1">
-              <button
-                onClick={() => setShowModal(false)}
-                className="flex-1 py-3 rounded-xl bg-[#172a1a] text-[#a0af9e] font-bold text-sm"
-              >
-                {t.common.cancel}
-              </button>
-              <button
-                onClick={handleLog}
-                disabled={!inputWeight}
-                className="flex-1 py-3 rounded-xl font-black text-sm text-[#051107] disabled:opacity-40 transition-opacity"
-                style={{ background: 'linear-gradient(135deg, #4ade80, #19be64)' }}
-              >
-                {tp.save}
-              </button>
-            </div>
-          </div>
-        </div>
+        <WeightModal
+          onClose={() => setShowModal(false)}
+          onLog={(w, note) => { logWeight(w, note); setShowModal(false) }}
+          labels={{
+            title: tp.logWeight,
+            weightLabel: tp.weightLabel,
+            weightPlaceholder: tp.weightPlaceholder,
+            noteLabel: tp.noteLabel,
+            notePlaceholder: tp.notePlaceholder,
+            save: tp.save,
+            cancel: t.common.cancel,
+          }}
+        />
       )}
     </PageWrapper>
   )

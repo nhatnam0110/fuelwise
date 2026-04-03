@@ -1,5 +1,5 @@
 import { generateId } from '@/lib/utils'
-import type { FoodProduct } from '@/features/food-search/useFoodSearch'
+import type { FoodProduct } from '../types'
 
 export async function searchFoods(query: string): Promise<FoodProduct[]> {
   const res = await fetch(

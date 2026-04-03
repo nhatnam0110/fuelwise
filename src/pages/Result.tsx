@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { ExternalLink } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { useStore } from '@/store'
+import { useStore } from '@/state'
 import { useT } from '@/hooks/useT'
 import { PageWrapper } from '@/components/layout/PageWrapper'
 

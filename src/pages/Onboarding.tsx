@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Minus, Plus } from 'lucide-react'
-import { useStore } from '@/store'
+import { useStore } from '@/state'
 import { calculateMacroTargets } from '@/lib/tdee'
+import { Stepper } from '@/features/user/components/Stepper'
 import type { UserProfile } from '@/types/user'
 import onboardingBg from '@/assets/herobg.jpg'
 
@@ -17,64 +17,6 @@ const defaultForm: FormData = {
   gender: 'male',
   activityLevel: 'moderate',
   goal: 'maintain',
-}
-
-// Reusable stepper input 
-
-function Stepper({
-  label, value, unit, min, max, step = 1,
-  onChange,
-}: {
-  label: string; value: number; unit: string
-  min: number; max: number; step?: number
-  onChange: (v: number) => void
-}) {
-  const [raw, setRaw] = useState(String(value))
-
-  const handleButton = (next: number) => {
-    onChange(next)
-    setRaw(String(next))
-  }
-
-  const handleBlur = () => {
-    const parsed = Number(raw)
-    const clamped = isNaN(parsed) ? value : Math.min(max, Math.max(min, parsed))
-    onChange(clamped)
-    setRaw(String(clamped))
-  }
-
-  return (
-    <div className="bg-[#0d2a12] border border-[#1a3a1f] rounded-xl p-4">
-      <div className="flex items-center gap-1.5 mb-3">
-        <p className="text-[10px] tracking-[3px] uppercase text-[#4ade80] font-bold">{label}</p>
-        <span className="text-[10px] tracking-[2px] uppercase text-[#2d5a35] font-bold">· {unit}</span>
-      </div>
-      <div className="flex items-center justify-between gap-3">
-        <button
-          onClick={() => handleButton(Math.max(min, value - step))}
-          className="w-9 h-9 rounded-full border border-[#1a3a1f] flex items-center justify-center text-[#4ade80] hover:border-[#4ade80] hover:bg-[#0d3a18] transition-colors"
-        >
-          <Minus size={14} />
-        </button>
-        <div className="flex items-center justify-center flex-1">
-          <input
-            type="text"
-            inputMode="numeric"
-            value={raw}
-            onChange={(e) => setRaw(e.target.value)}
-            onBlur={handleBlur}
-            className="w-16 bg-transparent text-white text-3xl font-black text-center focus:outline-none caret-[#4ade80]"
-          />
-        </div>
-        <button
-          onClick={() => handleButton(Math.min(max, value + step))}
-          className="w-9 h-9 rounded-full border border-[#1a3a1f] flex items-center justify-center text-[#4ade80] hover:border-[#4ade80] hover:bg-[#0d3a18] transition-colors"
-        >
-          <Plus size={14} />
-        </button>
-      </div>
-    </div>
-  )
 }
 
 // Step progress bar 
@@ -143,9 +85,9 @@ function StepOne({ data, onChange }: { data: FormData; onChange: (d: Partial<For
 
       {/* Steppers */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <Stepper label="Age"    value={data.age}    unit="yrs" min={10} max={100} onChange={(v) => onChange({ age: v })} />
-        <Stepper label="Weight" value={data.weight} unit="kg"  min={30} max={250} onChange={(v) => onChange({ weight: v })} />
-        <Stepper label="Height" value={data.height} unit="cm"  min={100} max={250} onChange={(v) => onChange({ height: v })} />
+        <Stepper label="Age"    value={data.age}    unit="yrs" min={10} max={100} onChange={(v) => onChange({ age: v })} className="bg-[#0d2a12]" />
+        <Stepper label="Weight" value={data.weight} unit="kg"  min={30} max={250} onChange={(v) => onChange({ weight: v })} className="bg-[#0d2a12]" />
+        <Stepper label="Height" value={data.height} unit="cm"  min={100} max={250} onChange={(v) => onChange({ height: v })} className="bg-[#0d2a12]" />
       </div>
     </div>
   )

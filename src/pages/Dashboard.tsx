@@ -1,67 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { Trash2, PlusCircle, UtensilsCrossed } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
-import { useStore } from '@/store'
+import { useStore } from '@/state'
 import { useT } from '@/hooks/useT'
+import { CalorieRing } from '@/components/dashboard/CalorieRing'
+import { MacroBar } from '@/components/dashboard/MacroBar'
 
 function formatDay(language: 'en' | 'vi') {
   return new Date().toLocaleDateString(language === 'vi' ? 'vi-VN' : 'en-US', {
     weekday: 'long', month: 'long', day: 'numeric',
   })
-}
-
-// SVG circle ring math
-const RADIUS = 44
-const CIRCUMFERENCE = 2 * Math.PI * RADIUS
-
-function CalorieRing({ consumed, target, label, of: ofLabel, kcal }: {
-  consumed: number; target: number; label: string; of: string; kcal: string
-}) {
-  const pct = target > 0 ? Math.min(1, consumed / target) : 0
-  const remaining = Math.max(0, target - consumed)
-  const offset = CIRCUMFERENCE * (1 - pct)
-
-  return (
-    <div className="relative w-56 h-56 flex-shrink-0">
-      <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-        <circle cx="50" cy="50" r={RADIUS} fill="transparent"
-          stroke="#172a1a" strokeWidth="8" />
-        <circle cx="50" cy="50" r={RADIUS} fill="transparent"
-          stroke="#4ade80" strokeWidth="8" strokeLinecap="round"
-          strokeDasharray={CIRCUMFERENCE}
-          strokeDashoffset={offset}
-          style={{ transition: 'stroke-dashoffset 1s ease-out', filter: 'drop-shadow(0 0 8px rgba(74,222,128,0.4))' }}
-        />
-      </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="text-xs uppercase tracking-widest text-[#a0af9e]">{label}</span>
-        <span className="text-4xl font-black text-white">{remaining.toLocaleString()}</span>
-        <span className="text-xs text-[#a0af9e]">{ofLabel} {target.toLocaleString()} {kcal}</span>
-      </div>
-    </div>
-  )
-}
-
-function MacroBar({ label, consumed, target, color }: {
-  label: string; consumed: number; target: number; color: string
-}) {
-  const pct = target > 0 ? Math.min(100, Math.round((consumed / target) * 100)) : 0
-  return (
-    <div className="space-y-2">
-      <div className="flex justify-between items-end">
-        <span className="font-bold text-base text-white">{label}</span>
-        <span className="text-sm text-[#a0af9e]">
-          <span className="font-bold" style={{ color }}>{consumed}g</span> / {target}g
-        </span>
-      </div>
-      <div className="h-2.5 w-full bg-[#172a1a] rounded-full overflow-hidden">
-        <div
-          className="h-full rounded-full transition-all duration-700"
-          style={{ width: `${pct}%`, backgroundColor: color, boxShadow: `0 0 10px ${color}66` }}
-        />
-      </div>
-    </div>
-  )
 }
 
 export default function Dashboard() {

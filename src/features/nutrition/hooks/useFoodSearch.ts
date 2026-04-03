@@ -1,14 +1,9 @@
 import { useState, useEffect } from 'react'
-import { searchFoods } from '@/services/openFoodFacts'
-
-export interface FoodProduct {
-  id: string
-  name: string
-  per100g: { calories: number; protein: number; carbs: number; fat: number }
-}
+import { searchFoods } from '../services/openFoodFacts'
+export type { FoodProduct } from '../types'
 
 export function useFoodSearch(query: string) {
-  const [results, setResults] = useState<FoodProduct[]>([])
+  const [results, setResults] = useState<import('../types').FoodProduct[]>([])
   const [loading, setLoading] = useState(false)
   const [fetchError, setFetchError] = useState(false)
 
