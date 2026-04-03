@@ -1,10 +1,8 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { X, Loader2, Sparkles, Globe, ClipboardList } from 'lucide-react'
 import { PageWrapper } from '@/components/layout/PageWrapper'
-import { useStore } from '@/state'
 import { useT } from '@/hooks/useT'
-import { generateRecipe } from '@/services/claude'
+import { useGenerator } from '@/features/generator/hooks/useGenerator'
 import { FoodSearchModal } from '@/features/nutrition/components/FoodSearchModal'
 import { IngredientInput } from '@/features/generator/components/IngredientInput'
 
@@ -17,38 +15,9 @@ const MEAL_TYPE_IMGS = { breakfast: breakfastImg, lunch: lunchImg, dinner: dinne
 const MEAL_TYPE_IDS = ['breakfast', 'lunch', 'dinner', 'snack'] as const
 
 export default function Generator() {
-  const navigate = useNavigate()
   const t = useT()
-  const {
-    generatorInput, updateGeneratorInput,
-    setCurrentRecipe, getRemainingMacros,
-    isLoading, setLoading, error, setError, language,
-  } = useStore()
-
-  const remaining = getRemainingMacros()
+  const { generatorInput, updateGeneratorInput, remaining, isLoading, error, addIngredient, removeIngredient, generate } = useGenerator()
   const [showFoodSearch, setShowFoodSearch] = useState(false)
-
-  const addIngredient = (val: string) => {
-    if (!val || generatorInput.ingredients.includes(val)) return
-    updateGeneratorInput({ ingredients: [...generatorInput.ingredients, val] })
-  }
-
-  const removeIngredient = (item: string) =>
-    updateGeneratorInput({ ingredients: generatorInput.ingredients.filter((i) => i !== item) })
-
-  const handleGenerate = async () => {
-    setError(null)
-    setLoading(true)
-    try {
-      const recipe = await generateRecipe(generatorInput, remaining, language)
-      setCurrentRecipe(recipe)
-      navigate(`/recipe/${recipe.id}`)
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Something went wrong. Try again.')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   return (
     <>
@@ -60,7 +29,6 @@ export default function Generator() {
           {t.generator.title}
         </h1>
 
-        {/* Remaining macros */}
         <div className="bg-[#172a1a]/60 backdrop-blur-lg rounded-2xl p-5 border border-[#3d4b3e]/20">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-5">
             <div>
@@ -90,12 +58,7 @@ export default function Generator() {
 
         {/* LEFT: inputs */}
         <div className="flex-1 space-y-10">
-
-          {/* Ingredients */}
-          <IngredientInput
-            ingredients={generatorInput.ingredients}
-            onAdd={addIngredient}
-          />
+          <IngredientInput ingredients={generatorInput.ingredients} onAdd={addIngredient} />
 
           {/* Meal type */}
           <section>
@@ -200,15 +163,14 @@ export default function Generator() {
               )}
 
               <button
-                onClick={handleGenerate}
+                onClick={generate}
                 disabled={isLoading || generatorInput.ingredients.length === 0}
                 className="w-full py-5 rounded-full bg-gradient-to-br from-[#4ade80] to-[#19be64] text-[#002f13] font-black text-lg tracking-tight shadow-[0_0_40px_rgba(25,190,100,0.3)] hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-30 disabled:cursor-not-allowed disabled:scale-100"
               >
-                {isLoading ? (
-                  <><Loader2 size={20} className="animate-spin" /> {t.generator.generating}</>
-                ) : (
-                  <><Sparkles size={20} /> {t.generator.generateBtn.toUpperCase()}</>
-                )}
+                {isLoading
+                  ? <><Loader2 size={20} className="animate-spin" /> {t.generator.generating}</>
+                  : <><Sparkles size={20} /> {t.generator.generateBtn.toUpperCase()}</>
+                }
               </button>
 
               <button
