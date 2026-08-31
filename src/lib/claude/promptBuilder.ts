@@ -1,6 +1,5 @@
-import type { Recipe, Nutrition } from '@/types/recipe'
+import type { Nutrition } from '@/types/recipe'
 import type { GeneratorInput } from '@/types/log'
-import { generateId } from '@/lib/utils'
 
 const MEAL_SIZE_PCT: Record<string, number> = {
   light: 0.25,
@@ -8,7 +7,8 @@ const MEAL_SIZE_PCT: Record<string, number> = {
   full: 0.60,
 }
 
-function scaleMacros(remaining: Nutrition, mealSize: string): Nutrition {
+/** Scales the user's remaining daily macro budget down to a single-meal target. */
+export function scaleMacros(remaining: Nutrition, mealSize: string): Nutrition {
   const pct = MEAL_SIZE_PCT[mealSize] ?? 0.40
   return {
     calories: Math.round(remaining.calories * pct),
@@ -18,7 +18,7 @@ function scaleMacros(remaining: Nutrition, mealSize: string): Nutrition {
   }
 }
 
-function buildSystemPrompt(language: 'en' | 'vi'): string {
+export function buildSystemPrompt(language: 'en' | 'vi'): string {
   const langInstruction = language === 'vi'
     ? `Respond in Vietnamese. Use authentic Vietnamese dish names. Suggest Vietnamese-style portions (300–500 kcal per main meal is normal). Prefer common Vietnamese ingredients.`
     : `Respond in English.`
@@ -30,7 +30,7 @@ Respond ONLY with a valid JSON object.
 No markdown, no explanation, no code blocks, no preamble. Pure raw JSON only.`
 }
 
-function buildUserPrompt(input: GeneratorInput, target: Nutrition, language: 'en' | 'vi'): string {
+export function buildUserPrompt(input: GeneratorInput, target: Nutrition, language: 'en' | 'vi'): string {
   return `
 Generate a ${input.mealType} recipe for the "${input.cuisine}" cuisine style.
 
@@ -76,44 +76,4 @@ Return EXACTLY this JSON shape with no other text:
 macroFitScore = 0–100 integer. 100 means perfect macro match.
 Calculate as: 100 minus the average percentage deviation across all 4 macros.
 `
-}
-
-export async function generateRecipe(
-  input: GeneratorInput,
-  remaining: Nutrition,
-  language: 'en' | 'vi' = 'en'
-): Promise<Recipe> {
-  const target = scaleMacros(remaining, input.mealSize)
-
-  const res = await fetch('/api/generate', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      model: 'claude-haiku-4-5-20251001',
-      max_tokens: 1600,
-      system: buildSystemPrompt(language),
-      messages: [{ role: 'user', content: buildUserPrompt(input, target, language) }],
-    }),
-  })
-
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error((err as { error?: string }).error ?? `Request failed (${res.status})`)
-  }
-
-  const message = await res.json()
-  const raw = message.content?.[0]
-  if (!raw || raw.type !== 'text') {
-    throw new Error('Unexpected response format from Claude API.')
-  }
-
-  let parsed: Omit<Recipe, 'id'>
-  try {
-    const cleaned = raw.text.replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/i, '').trim()
-    parsed = JSON.parse(cleaned)
-  } catch {
-    throw new Error('Failed to parse recipe from AI response. Please try again.')
-  }
-
-  return { ...parsed, id: generateId() }
 }
